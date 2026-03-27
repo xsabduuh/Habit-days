@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#0a0f1a">
-  <title>مدينة الإرادة | SimCity لمحاربة العادة السيئة</title>
+  <title>مدينة الإرادة | SimCity متقدم لمحاربة العادة</title>
   <style>
     * {
       margin: 0;
@@ -25,7 +25,6 @@
       transition: background 0.5s;
     }
 
-    /* Fog effect */
     .fog-overlay {
       position: fixed;
       top: 0;
@@ -211,15 +210,21 @@
       color: #0f172a;
       cursor: pointer;
       margin: 0 5px;
+      transition: 0.2s;
     }
     .btn-danger {
       background: linear-gradient(135deg, #f43f5e, #e11d48);
       color: white;
     }
+    .btn-warning {
+      background: linear-gradient(135deg, #facc15, #f97316);
+      color: #0f172a;
+    }
     .flex-btns {
       display: flex;
       gap: 10px;
       justify-content: center;
+      flex-wrap: wrap;
       margin-top: 10px;
     }
     .city-level-badge {
@@ -231,7 +236,6 @@
       font-weight: bold;
     }
 
-    /* مراحل المدينة تغير لون الخلفية */
     body.city-level-1 { background: radial-gradient(circle at 20% 30%, #0a0f1a, #020617); }
     body.city-level-2 { background: radial-gradient(circle at 20% 30%, #14532d, #0a2f1a); }
     body.city-level-3 { background: radial-gradient(circle at 20% 30%, #1e3a2f, #0c4a2e); }
@@ -256,18 +260,19 @@
 <div class="container">
   <div class="card">
     <div class="header">
-      <h1>🏙️ مدينة الإرادة | SimCity لمحاربة العادة السيئة</h1>
+      <h1>🏙️ مدينة الإرادة | SimCity متقدم</h1>
       <div><span id="pointsDisplay">0</span> <span style="color:#facc15;">نقطة</span></div>
     </div>
     <div class="flex-btns">
       <button class="btn" id="successBtn">✅ نجحت اليوم (لا عادة سيئة) +10</button>
       <button class="btn btn-danger" id="failBtn">❌ سقطت اليوم -30</button>
+      <button class="btn btn-warning" id="undoDayBtn">↩️ تراجع عن آخر يوم</button>
     </div>
     <div class="city-level-badge" id="cityLevelBadge">أرض فارغة</div>
   </div>
 
   <div class="card">
-    <h3>🗺️ مدينتك (اضغط مطولاً لبيع المبنى)</h3>
+    <h3>🗺️ مدينتك (اضغط مطولاً لبيع المبنى واسترداد كامل المبلغ)</h3>
     <div id="cityGrid" class="city-grid"></div>
   </div>
 
@@ -278,6 +283,9 @@
 
   <div class="card">
     <h3>🛒 متجر المدينة</h3>
+    <div class="flex-btns" style="justify-content: flex-end;">
+      <button id="undoPurchaseBtn" class="btn btn-warning" style="padding:6px 12px;">↩️ إلغاء آخر عملية شراء</button>
+    </div>
     <div id="shopContainer" class="shop-section"></div>
   </div>
 
@@ -292,7 +300,7 @@
   </div>
 
   <div class="card">
-    <div style="display: flex; gap:10px; justify-content: flex-end;">
+    <div style="display: flex; gap:10px; justify-content: flex-end; flex-wrap: wrap;">
       <button id="resetGameBtn" class="btn btn-danger">🗑️ إعادة ضبط اللعبة</button>
       <button id="exportBtn" class="btn">📤 تصدير</button>
       <button id="importBtn" class="btn">📥 استيراد</button>
@@ -302,8 +310,8 @@
 </div>
 
 <script>
-  // ======================== بيانات اللعبة ========================
-  const STORAGE_KEY = "simcity_habit_final";
+  // ======================== بيانات اللعبة المتقدمة ========================
+  const STORAGE_KEY = "simcity_habit_ultimate";
 
   // المباني والديكورات والمعززات
   const BUILDINGS = [
@@ -347,7 +355,8 @@
     totalFails: 0,
     totalPointsEarned: 0,
     totalPointsSpent: 0,
-    achievementsUnlocked: []
+    achievementsUnlocked: [],
+    purchaseHistory: []  // سجل آخر 10 عمليات شراء (لإلغاء آخر شراء)
   };
 
   // تعريف الإنجازات
@@ -364,7 +373,7 @@
 
   function getTodayStr() { return new Date().toISOString().slice(0,10); }
 
-  // شراء عنصر
+  // شراء عنصر مع تسجيل في سجل المشتريات
   function purchaseItem(itemId) {
     const item = ALL_ITEMS.find(i => i.id === itemId);
     if (!item) return false;
@@ -376,6 +385,9 @@
       state.cityGrid[emptyIndex] = newItem;
       state.points -= item.cost;
       state.totalPointsSpent += item.cost;
+      // تسجيل العملية
+      state.purchaseHistory.unshift({ type: "building", itemId: item.id, cost: item.cost, index: emptyIndex });
+      if (state.purchaseHistory.length > 20) state.purchaseHistory.pop();
       saveGame();
       renderCity();
       updateAllUI();
@@ -410,7 +422,59 @@
       }
       state.points -= item.cost;
       state.totalPointsSpent += item.cost;
+      state.purchaseHistory.unshift({ type: "booster", itemId: item.id, cost: item.cost });
+      if (state.purchaseHistory.length > 20) state.purchaseHistory.pop();
       saveGame();
+      updateAllUI();
+      return true;
+    }
+    return false;
+  }
+
+  // إلغاء آخر عملية شراء
+  function undoLastPurchase() {
+    if (state.purchaseHistory.length === 0) { alert("لا توجد عمليات شراء للإلغاء."); return; }
+    const last = state.purchaseHistory[0];
+    if (last.type === "building") {
+      // إزالة المبنى من الخلية
+      if (state.cityGrid[last.index] && state.cityGrid[last.index].id === last.itemId) {
+        state.cityGrid[last.index] = null;
+        state.points += last.cost;
+        state.totalPointsSpent -= last.cost;
+        state.purchaseHistory.shift();
+        saveGame();
+        renderCity();
+        updateAllUI();
+        alert(`تم إلغاء شراء ${ALL_ITEMS.find(i=>i.id===last.itemId).name} واسترداد ${last.cost} نقطة.`);
+      } else {
+        alert("لا يمكن التراجع، ربما تم بيع المبنى يدوياً.");
+      }
+    } else if (last.type === "booster") {
+      // المعززات: نعيد النقاط ونلغي التأثير
+      const booster = ALL_ITEMS.find(i => i.id === last.itemId);
+      if (!booster) return;
+      state.points += last.cost;
+      state.totalPointsSpent -= last.cost;
+      if (last.itemId === "double") state.boostersActive.double = false;
+      else if (last.itemId === "shield") state.boostersActive.shield = false;
+      else if (last.itemId === "weeklyBonus") state.boostersActive.weeklyBonusAdded = false;
+      state.purchaseHistory.shift();
+      saveGame();
+      updateAllUI();
+      alert(`تم إلغاء شراء ${booster.name} واسترداد ${last.cost} نقطة.`);
+    }
+  }
+
+  // بيع مبنى (كامل الثمن)
+  function sellBuilding(index) {
+    const building = state.cityGrid[index];
+    if (!building) return false;
+    if (confirm(`هل تريد بيع ${building.name} واسترداد ${building.cost} نقطة؟`)) {
+      state.points += building.cost;
+      state.totalPointsEarned += building.cost;
+      state.cityGrid[index] = null;
+      saveGame();
+      renderCity();
       updateAllUI();
       return true;
     }
@@ -429,7 +493,6 @@
     state.streak++;
     if (state.streak > state.maxStreak) state.maxStreak = state.streak;
 
-    // مكافآت السلسلة
     let bonus = 0;
     if (state.streak === 7) bonus = 50;
     else if (state.streak === 14) bonus = 120;
@@ -473,13 +536,76 @@
     updateAllUI();
   }
 
+  // تراجع عن آخر يوم (سواء نجاح أو فشل)
+  function undoLastDay() {
+    const today = getTodayStr();
+    if (!state.history[today]) { alert("لا يوجد يوم مسجل اليوم للتراجع."); return; }
+    const lastStatus = state.history[today];
+    // إعادة الحسابات
+    if (lastStatus === "success") {
+      // نخصم النقاط التي أضيفت
+      let earned = 10;
+      // نعرف إن كان هناك مضاعف؟ صعب التتبع بدقة، لكننا سنستخدم القيمة الافتراضية (10)
+      // وللتيسير: نخصم 10 فقط، ونعيد الـ streak.
+      state.points -= 10;
+      state.totalPointsEarned -= 10;
+      state.totalSuccesses--;
+      state.streak--;
+      if (state.streak < 0) state.streak = 0;
+      // مكافآت السلسلة: لا يمكن التراجع عنها بسهولة، لكن سنقوم بإعادة حساب الـ maxStreak
+      // ببساطة نعيد حساب maxStreak من البداية
+      recalcMaxStreak();
+    } else if (lastStatus === "fail") {
+      state.points += 30;
+      state.totalPointsEarned += 30;
+      state.totalFails--;
+      // استعادة الـ streak السابق: نحتاج إلى إعادة حساب streak من التاريخ
+      recalcStreak();
+    }
+    delete state.history[today];
+    saveGame();
+    checkAchievements();
+    updateAllUI();
+    alert("تم التراجع عن آخر يوم.");
+  }
+
+  // إعادة حساب الـ streak بناءً على التاريخ
+  function recalcStreak() {
+    let streak = 0;
+    let today = new Date();
+    for (let i=0; i<1000; i++) {
+      let d = new Date(today);
+      d.setDate(today.getDate() - i);
+      let dateStr = d.toISOString().slice(0,10);
+      const day = state.history[dateStr];
+      if (day === "success") streak++;
+      else break;
+    }
+    state.streak = streak;
+  }
+
+  function recalcMaxStreak() {
+    // نحسب أطول سلسلة متتالية في كل التواريخ
+    let maxStreak = 0;
+    let dates = Object.keys(state.history).sort();
+    let current = 0;
+    for (let i=0; i<dates.length; i++) {
+      if (state.history[dates[i]] === "success") {
+        current++;
+        if (current > maxStreak) maxStreak = current;
+      } else {
+        current = 0;
+      }
+    }
+    state.maxStreak = maxStreak;
+  }
+
   // إجمالي قيمة المباني
   function getTotalBuildingValue() {
     let total = 0;
     for (let cell of state.cityGrid) {
       if (cell && (cell.type === "building" || cell.type === "decoration")) {
-        const original = ALL_ITEMS.find(i => i.id === cell.id);
-        if (original) total += original.cost;
+        total += cell.cost;
       }
     }
     return total;
@@ -518,17 +644,10 @@
       const tile = document.createElement("div");
       tile.className = "city-tile";
       if (cell) {
-        tile.innerHTML = `${cell.emoji}<span class="building-tooltip">${cell.name}</span>`;
+        tile.innerHTML = `${cell.emoji}<span class="building-tooltip">${cell.name} (${cell.cost} نقطة)</span>`;
         tile.oncontextmenu = (e) => {
           e.preventDefault();
-          if (confirm(`بيع ${cell.name} مقابل ${Math.floor(cell.cost/2)} نقطة؟`)) {
-            state.points += Math.floor(cell.cost/2);
-            state.totalPointsEarned += Math.floor(cell.cost/2);
-            state.cityGrid[i] = null;
-            saveGame();
-            renderCity();
-            updateAllUI();
-          }
+          sellBuilding(i);
           return false;
         };
       } else {
@@ -649,7 +768,8 @@
       totalFails: state.totalFails,
       totalPointsEarned: state.totalPointsEarned,
       totalPointsSpent: state.totalPointsSpent,
-      achievementsUnlocked: state.achievementsUnlocked
+      achievementsUnlocked: state.achievementsUnlocked,
+      purchaseHistory: state.purchaseHistory
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
   }
@@ -666,6 +786,7 @@
         if (!state.totalPointsEarned) state.totalPointsEarned = state.points;
         if (!state.totalPointsSpent) state.totalPointsSpent = 0;
         if (!state.achievementsUnlocked) state.achievementsUnlocked = [];
+        if (!state.purchaseHistory) state.purchaseHistory = [];
       } catch(e) {}
     }
     updateAllUI();
@@ -707,6 +828,8 @@
   // ربط الأحداث
   document.getElementById("successBtn").addEventListener("click", handleSuccess);
   document.getElementById("failBtn").addEventListener("click", handleFail);
+  document.getElementById("undoDayBtn").addEventListener("click", undoLastDay);
+  document.getElementById("undoPurchaseBtn").addEventListener("click", undoLastPurchase);
   document.getElementById("resetGameBtn").addEventListener("click", resetGame);
   document.getElementById("exportBtn").addEventListener("click", exportGame);
   const importInput = document.createElement("input");
