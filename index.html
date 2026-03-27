@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="يومياتي المتطورة">
-  <meta name="theme-color" content="#0f172a">
-  <title>يومياتي المتطورة | تتبع العادات الذكي</title>
+  <meta name="apple-mobile-web-app-title" content="يومياتي المتقدمة">
+  <meta name="theme-color" content="#0b1120">
+  <title>يومياتي المتقدمة | تتبع العادات الذكي</title>
   <style>
     * {
       margin: 0;
@@ -21,14 +21,14 @@
       font-family: system-ui, 'Segoe UI', 'Tajawal', -apple-system, BlinkMacSystemFont, sans-serif;
       min-height: 100vh;
       padding: 1rem 1rem 2rem;
-      max-width: 700px;
+      max-width: 800px;
       margin: 0 auto;
       position: relative;
-      background: radial-gradient(circle at 20% 30%, #0a0f2a, #030617);
+      background: radial-gradient(circle at 20% 30%, #0b1120, #030617);
       overflow-x: hidden;
     }
 
-    /* خلفية متحركة (جزيئات) */
+    /* جزيئات متحركة */
     .particles {
       position: fixed;
       top: 0;
@@ -40,15 +40,15 @@
     }
     .particle {
       position: absolute;
-      background: rgba(56, 189, 248, 0.4);
+      background: rgba(56, 189, 248, 0.3);
       border-radius: 50%;
-      animation: float 8s infinite ease-in-out;
-      filter: blur(1px);
+      animation: float 10s infinite ease-in-out;
+      filter: blur(2px);
     }
     @keyframes float {
-      0% { transform: translateY(0) translateX(0) scale(1); opacity: 0.3; }
-      50% { transform: translateY(-40px) translateX(20px) scale(1.2); opacity: 0.6; }
-      100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.3; }
+      0% { transform: translateY(0) translateX(0) scale(1); opacity: 0.2; }
+      50% { transform: translateY(-60px) translateX(30px) scale(1.5); opacity: 0.5; }
+      100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.2; }
     }
 
     .app-container {
@@ -59,21 +59,35 @@
       z-index: 2;
     }
 
-    /* بطاقات زجاجية */
+    /* بطاقات زجاجية مع حواف مضيئة */
     .card {
-      background: rgba(15, 23, 42, 0.65);
+      background: rgba(12, 18, 34, 0.7);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-radius: 32px;
       padding: 1.25rem 1rem;
-      box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.03);
       border: 1px solid rgba(56, 189, 248, 0.2);
       transition: transform 0.2s ease, box-shadow 0.3s ease;
     }
     .card:hover {
       transform: translateY(-3px);
+      border-color: rgba(56, 189, 248, 0.5);
       box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.5);
-      border-color: rgba(56, 189, 248, 0.4);
+    }
+
+    /* تدرجات النصوص */
+    .gradient-text {
+      background: linear-gradient(135deg, #38bdf8, #a78bfa, #f472b6);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+    .gold-text {
+      background: linear-gradient(135deg, #facc15, #f97316);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
     }
 
     .header h1 {
@@ -128,9 +142,7 @@
       border-radius: 40px;
       cursor: pointer;
       box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
-      transition: all 0.2s;
     }
-    .today-btn:hover { transform: scale(1.02); }
 
     /* قائمة العادات */
     .habits-list {
@@ -165,9 +177,6 @@
       width: 32px;
       height: 32px;
       flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
     .habit-icon svg {
       width: 26px;
@@ -207,18 +216,16 @@
       color: #f43f5e;
       opacity: 0.6;
       padding: 5px;
-      transition: 0.2s;
     }
-    .delete-habit:hover { opacity: 1; transform: scale(1.1); }
 
-    /* نقاط خاصة لعادة "لا عادة سيئة" */
+    /* نقاط وجوائز خاصة */
     .score-card {
       background: linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(250, 204, 21, 0.2));
       border-radius: 24px;
       padding: 12px;
-      margin-bottom: 16px;
       text-align: center;
       border: 1px solid rgba(249, 115, 22, 0.5);
+      margin-bottom: 12px;
     }
     .score-number {
       font-size: 2rem;
@@ -240,7 +247,42 @@
       display: inline-block;
     }
 
-    /* باقي العناصر (إحصائيات، أهداف، إلخ) */
+    /* إضافات متقدمة */
+    .insight-card {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 24px;
+      padding: 12px;
+      margin-top: 12px;
+    }
+    .mood-selector {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin: 10px 0;
+    }
+    .mood-btn {
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid #475569;
+      border-radius: 40px;
+      padding: 6px 12px;
+      cursor: pointer;
+      color: #94a3b8;
+      transition: all 0.2s;
+    }
+    .mood-btn.selected {
+      background: #38bdf8;
+      color: #0f172a;
+      border-color: #38bdf8;
+    }
+    .focus-mode {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(168, 85, 247, 0.2));
+      border-radius: 24px;
+      padding: 12px;
+      margin-top: 12px;
+      text-align: center;
+    }
+
+    /* إحصائيات */
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
@@ -261,12 +303,6 @@
       -webkit-background-clip: text;
       color: transparent;
       direction: ltr;
-    }
-    .goal-section {
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 24px;
-      padding: 12px;
-      margin-bottom: 20px;
     }
     .progress-bar {
       background: #334155;
@@ -316,7 +352,6 @@
     .heatmap-day.completed {
       background: linear-gradient(145deg, #10b981, #059669);
       color: white;
-      box-shadow: 0 0 6px #10b981;
     }
     .add-habit {
       display: flex;
@@ -373,14 +408,12 @@
   </style>
 </head>
 <body>
-
 <div class="particles" id="particles"></div>
-
 <div class="app-container">
   <div class="card">
     <div class="header">
-      <h1>📆 يومياتي المتطورة</h1>
-      <p>تتبع عاداتك + نقاط وجوائز لعادة "لا عادة سيئة"</p>
+      <h1>📆 يومياتي المتقدمة</h1>
+      <p>تتبع عاداتك بدقة ذكية + تحليلات عميقة + جوائز</p>
     </div>
   </div>
 
@@ -400,43 +433,60 @@
     </div>
     <div id="habitsContainer" class="habits-list"></div>
     <div class="add-habit">
-      <input type="text" id="newHabitName" placeholder="عادة جديدة... (مثل: تمرين)">
-      <select id="newHabitIcon" class="icon-select">
-        <option value="star">⭐</option>
-        <option value="heart">❤️</option>
-        <option value="sport">🏃</option>
-        <option value="read">📖</option>
+      <input type="text" id="newHabitName" placeholder="عادة جديدة...">
+      <select id="newHabitIcon">
+        <option value="star">⭐</option><option value="heart">❤️</option><option value="sport">🏃</option><option value="read">📖</option>
       </select>
       <button id="addHabitBtn">➕ أضف</button>
     </div>
   </div>
 
-  <!-- بطاقة النقاط والجوائز الخاصة بعادة "لا عادة سيئة" -->
-  <div class="card" id="specialBadCard">
-    <div style="font-weight:800; margin-bottom:8px;">🏆 جوائز الالتزام بـ "لا عادة سيئة"</div>
+  <!-- بطاقة النقاط والجوائز -->
+  <div class="card">
+    <div style="font-weight:800; margin-bottom:8px;">🏆 نظام النقاط الذكي</div>
     <div class="score-card">
-      <div>🌟 نقاط الإنجاز التراكمية</div>
-      <div class="score-number" id="badHabitScore">0</div>
-      <div style="font-size:0.7rem;">كل يوم بدون عادة سيئة = +10 نقاط</div>
+      <div>🌟 مجموع نقاط الإنجاز</div>
+      <div class="score-number" id="totalScore">0</div>
+      <div style="font-size:0.7rem;">كل عادة = 5 نقاط | عادة "لا عادة سيئة" = 10 نقاط</div>
     </div>
     <div id="prizesContainer" class="badges" style="justify-content:center;"></div>
+  </div>
+
+  <!-- المزاج والملاحظات -->
+  <div class="card">
+    <div style="font-weight:800;">😊 كيف كان مزاجك اليوم؟</div>
+    <div class="mood-selector" id="moodSelector">
+      <button class="mood-btn" data-mood="happy">😊 سعيد</button>
+      <button class="mood-btn" data-mood="neutral">😐 عادي</button>
+      <button class="mood-btn" data-mood="sad">😔 حزين</button>
+      <button class="mood-btn" data-mood="energy">⚡ نشيط</button>
+    </div>
+    <textarea id="dailyNote" placeholder="أضف ملاحظاتك اليومية..." rows="2" style="width:100%; background:rgba(0,0,0,0.5); border:1px solid #38bdf8; border-radius:20px; padding:8px; color:#e2e8f0; margin-top:8px;"></textarea>
+  </div>
+
+  <!-- وضع التركيز -->
+  <div class="card focus-mode" id="focusCard">
+    <div style="font-weight:800;">🎯 وضع التركيز</div>
+    <select id="focusHabitSelect" style="background:rgba(0,0,0,0.5); border:1px solid #38bdf8; border-radius:40px; padding:6px 12px; margin-top:8px;"></select>
+    <button id="startFocusBtn" class="small-btn" style="margin-top:8px;">ابدأ التركيز</button>
+    <div id="focusTimer" style="margin-top:8px; font-size:1.2rem; font-family:monospace;"></div>
   </div>
 
   <div class="card">
     <div style="font-weight:800; margin-bottom:12px;">📊 إحصائيات ذكية</div>
     <div class="stats-grid">
       <div class="stat-block"><div class="stat-number" id="todayCompleteCount">0</div><div>اليوم</div></div>
-      <div class="stat-block"><div class="stat-number" id="streakDays">0</div><div>🔥 أيام متتالية كاملة</div></div>
+      <div class="stat-block"><div class="stat-number" id="streakDays">0</div><div>🔥 أطول سلسلة أيام كاملة</div></div>
       <div class="stat-block"><div class="stat-number" id="totalPerfectDays">0</div><div>🏆 أيام مثالية</div></div>
       <div class="stat-block"><div class="stat-number" id="totalHabitsDone">0</div><div>📌 إنجازات كلية</div></div>
     </div>
 
     <div class="goal-section">
-      <div style="font-weight:600;">🎯 الهدف الأسبوعي (إنجازات يومية)</div>
+      <div style="font-weight:600;">🎯 الهدف الأسبوعي (أيام مثالية)</div>
       <div class="goal-input">
-        <span>أريد إنجاز</span>
+        <span>أريد تحقيق</span>
         <input type="number" id="weeklyGoalInput" min="0" max="7" step="1" value="5" style="width:80px;">
-        <span>أيام في الأسبوع</span>
+        <span>أيام مثالية في الأسبوع</span>
       </div>
       <div class="progress-bar"><div class="progress-fill" id="weeklyProgressFill"></div></div>
       <div style="font-size:0.7rem; margin-top:4px;" id="weeklyProgressText"></div>
@@ -454,6 +504,12 @@
       <canvas id="weeklyChart" width="400" height="150" style="width:100%; height:150px; background:rgba(0,0,0,0.3); border-radius:16px;"></canvas>
     </div>
 
+    <!-- رؤى ذكية -->
+    <div class="insight-card">
+      <div style="font-weight:600;">💡 رؤى ذكية</div>
+      <div id="insightText" style="font-size:0.8rem; margin-top:8px;">...</div>
+    </div>
+
     <div class="export-import">
       <button id="exportDataBtn" class="small-btn">📤 تصدير البيانات</button>
       <button id="importDataBtn" class="small-btn">📥 استيراد</button>
@@ -461,11 +517,11 @@
     </div>
     <div class="quote" id="dailyQuote">✨ "العادة قوة خفية"</div>
   </div>
-  <footer>✨ اضغط على العلامة لإكمال العادة | لا ضغط مطول للنسخ</footer>
+  <footer>✨ اضغط على العلامة لإكمال العادة | نظام ذكي يحلل تقدمك</footer>
 </div>
 
 <script>
-  // ========== أيقونات SVG واضحة ==========
+  // أيقونات SVG مدمجة
   const ICONS = {
     no_bad: `<svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4" y1="4" x2="20" y2="20"/></svg>`,
     pray: `<svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`,
@@ -476,18 +532,18 @@
     sport: `<svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M6 12c0 4 2 8 6 8s6-4 6-8-2-8-6-8-6 4-6 8z"/><path d="M12 4v16M4 12h16"/></svg>`
   };
 
-  // ========== البيانات ==========
+  // البيانات الأساسية
   let HABITS = [];
-  let appData = { habitsHistory: {} };
+  let appData = { habitsHistory: {}, moodLog: {}, notes: {} };
   let currentDate = new Date().toISOString().slice(0,10);
-  const STORAGE_KEY = "advanced_habits_v6";
+  const STORAGE_KEY = "advanced_habits_v7";
 
   function initDefaultHabits() {
     return [
-      { id: "no_bad", name: "لا عادة سيئة", icon: ICONS.no_bad },
-      { id: "pray", name: "صليت", icon: ICONS.pray },
-      { id: "wash_face", name: "غسلت وجهي", icon: ICONS.wash_face },
-      { id: "read_book", name: "قرأت كتاب", icon: ICONS.read_book }
+      { id: "no_bad", name: "لا عادة سيئة", icon: ICONS.no_bad, points: 10 },
+      { id: "pray", name: "صليت", icon: ICONS.pray, points: 5 },
+      { id: "wash_face", name: "غسلت وجهي", icon: ICONS.wash_face, points: 5 },
+      { id: "read_book", name: "قرأت كتاب", icon: ICONS.read_book, points: 5 }
     ];
   }
 
@@ -498,10 +554,12 @@
         const parsed = JSON.parse(stored);
         HABITS = parsed.habits || initDefaultHabits();
         appData.habitsHistory = parsed.history || {};
+        appData.moodLog = parsed.moodLog || {};
+        appData.notes = parsed.notes || {};
       } catch(e) { console.warn(e); }
     } else {
       HABITS = initDefaultHabits();
-      appData.habitsHistory = {};
+      appData = { habitsHistory: {}, moodLog: {}, notes: {} };
     }
     for (let date in appData.habitsHistory) {
       const day = appData.habitsHistory[date];
@@ -513,7 +571,9 @@
   function saveData() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
       habits: HABITS,
-      history: appData.habitsHistory
+      history: appData.habitsHistory,
+      moodLog: appData.moodLog,
+      notes: appData.notes
     }));
   }
 
@@ -532,23 +592,23 @@
     saveData();
     if (date === currentDate) {
       renderHabits();
-      updateStatsAndVisuals();
+      updateAllStats();
     } else {
-      updateStatsAndVisuals();
+      updateAllStats();
     }
     if (navigator.vibrate) navigator.vibrate(50);
   }
 
-  function addHabit(name, iconSvg) {
+  function addHabit(name, iconSvg, points = 5) {
     if (!name.trim()) return;
     const id = "habit_" + Date.now() + "_" + Math.random().toString(36).substr(2, 6);
-    HABITS.push({ id, name: name.trim(), icon: iconSvg || ICONS.star });
+    HABITS.push({ id, name: name.trim(), icon: iconSvg || ICONS.star, points });
     for (let date in appData.habitsHistory) {
       if (appData.habitsHistory[date][id] === undefined) appData.habitsHistory[date][id] = false;
     }
     saveData();
     renderHabits();
-    updateStatsAndVisuals();
+    updateAllStats();
   }
 
   function deleteHabit(habitId) {
@@ -559,7 +619,7 @@
       }
       saveData();
       renderHabits();
-      updateStatsAndVisuals();
+      updateAllStats();
     }
   }
 
@@ -596,13 +656,16 @@
     });
   }
 
-  // حساب نقاط "لا عادة سيئة"
-  function calculateBadHabitScore() {
+  // حساب النقاط الإجمالية
+  function calculateTotalScore() {
     let score = 0;
     for (let date in appData.habitsHistory) {
-      if (appData.habitsHistory[date]["no_bad"] === true) {
-        score += 10;
-      }
+      const day = appData.habitsHistory[date];
+      HABITS.forEach(habit => {
+        if (day[habit.id]) {
+          score += habit.points;
+        }
+      });
     }
     return score;
   }
@@ -622,23 +685,23 @@
     return streak;
   }
 
-  // جوائز خاصة لـ "لا عادة سيئة"
-  function updateBadHabitPrizes() {
-    const score = calculateBadHabitScore();
-    const streak = getBadHabitStreak();
+  // تحديث الجوائز (نقاط عامة وجوائز عادة "لا عادة سيئة")
+  function updatePrizes() {
+    const totalScore = calculateTotalScore();
+    const badStreak = getBadHabitStreak();
     const prizesDiv = document.getElementById("prizesContainer");
     let prizes = [];
-    if (score >= 100) prizes.push("🏅 100 نقطة - وسام المثابرة");
-    if (score >= 300) prizes.push("🏆 300 نقطة - نجم الانضباط");
-    if (score >= 500) prizes.push("🎖️ 500 نقطة - أسطورة التحكم الذاتي");
-    if (streak >= 7) prizes.push("🔥 سلسلة 7 أيام بدون عادة سيئة");
-    if (streak >= 30) prizes.push("💎 سلسلة 30 يوماً خالية من العادات السيئة");
+    if (totalScore >= 100) prizes.push("🏅 100 نقطة");
+    if (totalScore >= 300) prizes.push("🏆 300 نقطة");
+    if (totalScore >= 500) prizes.push("🎖️ 500 نقطة");
+    if (badStreak >= 7) prizes.push("🔥 سلسلة 7 أيام بدون عادة سيئة");
+    if (badStreak >= 30) prizes.push("💎 سلسلة 30 يوماً خالية من العادات السيئة");
     if (prizes.length === 0) prizes.push("ابدأ رحلتك لتحصل على جوائز!");
     prizesDiv.innerHTML = prizes.map(p => `<div class="prize-badge">${p}</div>`).join("");
-    document.getElementById("badHabitScore").innerText = score;
+    document.getElementById("totalScore").innerText = totalScore;
   }
 
-  // باقي الإحصائيات (مثل السابق)
+  // إحصائيات متقدمة
   function getPerfectStreak() {
     let streak = 0;
     let today = new Date();
@@ -775,20 +838,96 @@
     badgesDiv.innerHTML = badges.map(b => `<div class="badge">${b}</div>`).join("");
   }
 
-  const quotes = [
-    "✨ العادة قوة خفية",
-    "📚 كل يوم صفحة تقربك من حلمك",
-    "💪 لا تؤجل عمل اليوم إلى الغد",
-    "🌟 الاستمرارية أهم من الكمال",
-    "🕌 الصلاة تريح القلب",
-    "📖 كتاب واحد كل أسبوع يغير حياتك"
-  ];
-  function updateDailyQuote() {
-    const dayIndex = new Date().getDate() % quotes.length;
-    document.getElementById("dailyQuote").innerHTML = `✨ "${quotes[dayIndex]}"`;
+  // رؤى ذكية
+  function generateInsights() {
+    const totalScore = calculateTotalScore();
+    const perfectStreak = getPerfectStreak();
+    const badStreak = getBadHabitStreak();
+    const perfectDays = getPerfectDaysCount();
+    const todayDate = new Date().toISOString().slice(0,10);
+    const todayMood = appData.moodLog[todayDate] || "غير مسجل";
+    let insight = `🌟 مجموع نقاطك: ${totalScore}. `;
+    if (perfectStreak > 0) insight += `🔥 لديك سلسلة أيام مثالية: ${perfectStreak} يوماً. `;
+    if (badStreak > 0) insight += `🚫 التزامك بلا عادة سيئة مستمر لـ ${badStreak} يوماً. `;
+    if (perfectDays >= 10) insight += `🏆 حققت ${perfectDays} يوماً مثالياً! `;
+    insight += `😊 مزاجك اليوم: ${todayMood}. `;
+    const quote = quotes[Math.floor(Math.random() * quotes.length)];
+    insight += `💡 نصيحة: ${quote}`;
+    document.getElementById("insightText").innerHTML = insight;
   }
 
-  function updateStatsAndVisuals() {
+  const quotes = [
+    "الاستمرارية أهم من الكمال.",
+    "ابدأ صغيراً وكن ثابتاً.",
+    "العادات تصنع المستقبل.",
+    "كل يوم هو فرصة جديدة.",
+    "لا تقارن نفسك بأحد، رحلتك خاصة بك."
+  ];
+
+  // المزاج والملاحظات
+  function updateMoodAndNote() {
+    const today = currentDate;
+    const savedMood = appData.moodLog[today] || "";
+    const savedNote = appData.notes[today] || "";
+    document.getElementById("dailyNote").value = savedNote;
+    document.querySelectorAll(".mood-btn").forEach(btn => {
+      if (btn.dataset.mood === savedMood) btn.classList.add("selected");
+      else btn.classList.remove("selected");
+    });
+  }
+
+  function saveMood(mood) {
+    appData.moodLog[currentDate] = mood;
+    saveData();
+    updateAllStats();
+  }
+
+  function saveNote() {
+    const note = document.getElementById("dailyNote").value;
+    appData.notes[currentDate] = note;
+    saveData();
+  }
+
+  // وضع التركيز
+  let focusInterval = null;
+  let focusSeconds = 0;
+  function populateFocusSelect() {
+    const select = document.getElementById("focusHabitSelect");
+    select.innerHTML = "";
+    HABITS.forEach(habit => {
+      const option = document.createElement("option");
+      option.value = habit.id;
+      option.textContent = habit.name;
+      select.appendChild(option);
+    });
+  }
+  function startFocus() {
+    if (focusInterval) {
+      clearInterval(focusInterval);
+      focusInterval = null;
+      document.getElementById("startFocusBtn").textContent = "ابدأ التركيز";
+      document.getElementById("focusTimer").textContent = "";
+      return;
+    }
+    const habitId = document.getElementById("focusHabitSelect").value;
+    const habit = HABITS.find(h => h.id === habitId);
+    if (!habit) return;
+    focusSeconds = 0;
+    focusInterval = setInterval(() => {
+      focusSeconds++;
+      const mins = Math.floor(focusSeconds / 60);
+      const secs = focusSeconds % 60;
+      document.getElementById("focusTimer").textContent = `⏱️ ${mins}:${secs < 10 ? '0'+secs : secs}`;
+    }, 1000);
+    document.getElementById("startFocusBtn").textContent = "إيقاف التركيز";
+    // إشعار
+    if (Notification.permission === "granted") {
+      new Notification(`بدأت التركيز على "${habit.name}"`);
+    }
+  }
+
+  // تحديث جميع العناصر
+  function updateAllStats() {
     const { completed, total, percent } = getTodayCompletion();
     document.getElementById("todayCompleteCount").innerHTML = `${completed}/${total}`;
     document.getElementById("completionBadge").innerHTML = `${percent}%`;
@@ -799,7 +938,9 @@
     renderHeatmap();
     updateWeeklyGoal();
     updateBadges();
-    updateBadHabitPrizes();
+    updatePrizes();
+    generateInsights();
+    updateMoodAndNote();
   }
 
   function updateDateDisplay() {
@@ -810,7 +951,9 @@
     const formatted = `${year}/${month}/${day}`;
     document.getElementById("currentDateLabel").innerText = formatted;
     renderHabits();
-    updateStatsAndVisuals();
+    updateAllStats();
+    // تحديث المزاج والملاحظات للتاريخ الجديد
+    updateMoodAndNote();
   }
 
   function goPrevDay() {
@@ -831,7 +974,7 @@
   }
 
   function exportData() {
-    const data = { habits: HABITS, history: appData.habitsHistory };
+    const data = { habits: HABITS, history: appData.habitsHistory, moodLog: appData.moodLog, notes: appData.notes };
     const blob = new Blob([JSON.stringify(data, null, 2)], {type: "application/json"});
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
@@ -847,6 +990,8 @@
         if (parsed.habits && parsed.history) {
           HABITS = parsed.habits;
           appData.habitsHistory = parsed.history;
+          appData.moodLog = parsed.moodLog || {};
+          appData.notes = parsed.notes || {};
           saveData();
           updateDateDisplay();
           alert("تم الاستيراد بنجاح!");
@@ -861,15 +1006,16 @@
   function resetAll() {
     if (confirm("سيتم حذف كل العادات والبيانات. متأكد؟")) {
       HABITS = initDefaultHabits();
-      appData.habitsHistory = {};
+      appData = { habitsHistory: {}, moodLog: {}, notes: {} };
       saveData();
       updateDateDisplay();
+      populateFocusSelect();
     }
   }
 
   function createParticles() {
     const container = document.getElementById("particles");
-    for (let i = 0; i < 40; i++) {
+    for (let i = 0; i < 60; i++) {
       const particle = document.createElement("div");
       particle.classList.add("particle");
       const size = Math.random() * 6 + 2;
@@ -883,9 +1029,25 @@
     }
   }
 
+  // إشعارات
+  function requestNotificationPermission() {
+    if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
+      Notification.requestPermission();
+    }
+  }
+
+  // تحديث الاقتباس اليومي
+  function updateDailyQuote() {
+    const idx = new Date().getDate() % quotes.length;
+    document.getElementById("dailyQuote").innerHTML = `✨ "${quotes[idx]}"`;
+  }
+
+  // ربط الأحداث
   document.addEventListener("DOMContentLoaded", () => {
     loadData();
     createParticles();
+    requestNotificationPermission();
+    populateFocusSelect();
     document.getElementById("prevDayBtn").addEventListener("click", goPrevDay);
     document.getElementById("nextDayBtn").addEventListener("click", goNextDay);
     document.getElementById("todayBtn").addEventListener("click", goToday);
@@ -898,6 +1060,7 @@
       else if (iconSelect === "read") iconSvg = ICONS.read_book;
       if (name.trim()) addHabit(name, iconSvg);
       document.getElementById("newHabitName").value = "";
+      populateFocusSelect();
     });
     document.getElementById("exportDataBtn").addEventListener("click", exportData);
     document.getElementById("resetAllDataBtn").addEventListener("click", resetAll);
@@ -909,6 +1072,15 @@
       if (e.target.files.length) importData(e.target.files[0]);
     });
     document.getElementById("weeklyGoalInput").addEventListener("change", updateWeeklyGoal);
+    document.getElementById("startFocusBtn").addEventListener("click", startFocus);
+    document.getElementById("dailyNote").addEventListener("blur", saveNote);
+    document.querySelectorAll(".mood-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const mood = btn.dataset.mood;
+        saveMood(mood);
+        updateAllStats();
+      });
+    });
     updateDailyQuote();
     updateDateDisplay();
   });
