@@ -4,252 +4,813 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>متجر المكافآت | يومياتي</title>
+  <meta name="theme-color" content="#0a0f1a">
+  <title>مدينة الإرادة | SimCity لمحاربة العادة السيئة</title>
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
       user-select: none;
+      -webkit-tap-highlight-color: transparent;
     }
+
     body {
-      font-family: system-ui, 'Segoe UI', 'Tajawal', sans-serif;
-      background: radial-gradient(circle at 20% 30%, #0b1120, #030617);
-      min-height: 100vh;
+      font-family: 'Segoe UI', 'Tajawal', system-ui, -apple-system, sans-serif;
+      background: radial-gradient(circle at 20% 30%, #0a0f1a, #020617);
+      color: #e2e8f0;
       padding: 1rem;
-      color: #f1f5f9;
+      position: relative;
+      min-height: 100vh;
     }
+
+    /* Fog effect (الضباب الأسود / وحش الإدمان) */
+    .fog-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(0,0,0,0) 30%, rgba(0,0,0,0.6) 90%);
+      pointer-events: none;
+      z-index: 100;
+      transition: opacity 0.5s ease;
+      backdrop-filter: blur(4px);
+    }
+
     .container {
-      max-width: 700px;
+      max-width: 1400px;
       margin: 0 auto;
+      position: relative;
+      z-index: 2;
     }
+
+    /* تنسيقات البطاقات */
     .card {
-      background: rgba(12, 18, 34, 0.7);
+      background: rgba(15, 25, 45, 0.75);
       backdrop-filter: blur(12px);
-      border-radius: 32px;
-      padding: 1.25rem;
-      margin-bottom: 1.25rem;
-      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: 2rem;
+      padding: 1.2rem;
+      margin-bottom: 1.2rem;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
     }
+
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 1rem;
       margin-bottom: 1rem;
     }
-    .points {
-      background: linear-gradient(135deg, #facc15, #f97316);
-      color: #0f172a;
-      padding: 6px 16px;
-      border-radius: 40px;
-      font-weight: bold;
+
+    h1 {
+      font-size: 1.8rem;
+      background: linear-gradient(135deg, #38bdf8, #a78bfa);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
     }
-    .scene {
-      background: rgba(0, 0, 0, 0.4);
-      border-radius: 28px;
-      min-height: 200px;
+
+    .city-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 1.5rem;
+      padding: 1rem;
+    }
+    .city-tile {
+      aspect-ratio: 1;
+      background: rgba(0,0,0,0.5);
+      border-radius: 1rem;
       display: flex;
-      flex-wrap: wrap;
       align-items: center;
       justify-content: center;
-      gap: 12px;
-      padding: 20px;
-      margin-bottom: 20px;
+      font-size: 1.8rem;
+      transition: 0.2s;
+      border: 1px solid #334155;
+      cursor: pointer;
       position: relative;
     }
-    .item {
-      background: rgba(56, 189, 248, 0.2);
-      border-radius: 20px;
-      padding: 8px;
-      width: 80px;
-      text-align: center;
-      font-size: 2rem;
-      transition: transform 0.2s;
+    .city-tile:hover {
+      transform: scale(1.05);
+      background: #1e293b;
+      border-color: #38bdf8;
     }
-    .item svg {
-      width: 48px;
-      height: 48px;
+    .building-tooltip {
+      position: absolute;
+      bottom: 100%;
+      background: #0f172a;
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 12px;
+      white-space: nowrap;
+      display: none;
     }
-    .shop-grid {
+    .city-tile:hover .building-tooltip {
+      display: block;
+    }
+
+    /* إحصائيات */
+    .stats-dashboard {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(130px,1fr));
       gap: 12px;
-      margin-top: 15px;
+      margin: 1rem 0;
+    }
+    .stat-card {
+      background: rgba(0,0,0,0.4);
+      border-radius: 1.5rem;
+      padding: 0.8rem;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: bold;
+      background: linear-gradient(135deg, #facc15, #f97316);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      direction: ltr;
+    }
+
+    /* المتجر */
+    .shop-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px,1fr));
+      gap: 12px;
+      margin-top: 1rem;
     }
     .shop-item {
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0,0,0,0.5);
       border: 1px solid #38bdf8;
-      border-radius: 24px;
-      padding: 12px;
+      border-radius: 1.2rem;
+      padding: 0.8rem;
       text-align: center;
       cursor: pointer;
       transition: 0.2s;
     }
-    .shop-item:hover { transform: translateY(-4px); background: rgba(56, 189, 248, 0.2); }
-    .shop-item.disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
+    .shop-item:hover {
+      transform: translateY(-4px);
+      background: rgba(56,189,248,0.2);
     }
-    .price {
+    .shop-price {
       background: #facc15;
       color: #0f172a;
-      padding: 2px 8px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: bold;
       display: inline-block;
+      padding: 2px 10px;
+      border-radius: 2rem;
+      font-size: 0.7rem;
+      font-weight: bold;
       margin-top: 6px;
     }
-    button {
-      background: linear-gradient(135deg, #38bdf8, #818cf8);
-      border: none;
-      border-radius: 40px;
-      padding: 8px 16px;
-      color: white;
-      cursor: pointer;
+
+    /* التقويم */
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7,1fr);
+      gap: 6px;
+      margin-top: 0.5rem;
+    }
+    .cal-day {
+      background: #1e293b;
+      border-radius: 0.5rem;
+      text-align: center;
+      padding: 6px;
+      font-size: 0.7rem;
+      border: 1px solid #334155;
+    }
+    .cal-day.success { background: #10b981; color: white; }
+    .cal-day.fail { background: #ef4444; color: white; }
+    .cal-day.missed { background: #475569; color: #cbd5e1; }
+
+    /* إنجازات */
+    .achievements-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 0.5rem;
+    }
+    .achievement-badge {
+      background: linear-gradient(135deg, #f97316, #facc15);
+      color: #0f172a;
+      border-radius: 2rem;
+      padding: 4px 12px;
+      font-size: 0.7rem;
       font-weight: bold;
     }
-    .back-link {
-      display: inline-block;
+    .locked {
+      background: #334155;
+      color: #94a3b8;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #38bdf8, #818cf8);
+      border: none;
+      border-radius: 2rem;
+      padding: 10px 20px;
+      font-weight: bold;
+      color: #0f172a;
+      cursor: pointer;
+      margin: 0 5px;
+    }
+    .btn-danger {
+      background: linear-gradient(135deg, #f43f5e, #e11d48);
+      color: white;
+    }
+    .flex-btns {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
       margin-top: 10px;
-      color: #38bdf8;
-      text-decoration: none;
+    }
+
+    /* مدينة المراحل */
+    .city-level-badge {
+      background: #0f172a;
+      border-radius: 2rem;
+      padding: 6px 16px;
+      display: inline-block;
+      margin-bottom: 12px;
+      font-weight: bold;
+    }
+
+    /* تغير لون الخلفية حسب تطور المدينة */
+    body.city-level-1 { background: radial-gradient(circle at 20% 30%, #0a0f1a, #020617); }
+    body.city-level-2 { background: radial-gradient(circle at 20% 30%, #14532d, #0a2f1a); }
+    body.city-level-3 { background: radial-gradient(circle at 20% 30%, #1e3a2f, #0c4a2e); }
+    body.city-level-4 { background: radial-gradient(circle at 20% 30%, #2d4a3a, #1e5a3a); }
+    body.city-level-5 { background: radial-gradient(circle at 20% 30%, #facc15, #f97316); color: #0f172a; }
+    body.city-level-5 .card { background: rgba(0,0,0,0.5); color: #e2e8f0; }
+
+    footer {
+      text-align: center;
+      font-size: 0.7rem;
+      color: #64748b;
+      margin-top: 2rem;
+    }
+    @media (max-width: 700px) {
+      .shop-section { grid-template-columns: repeat(2,1fr); }
+      .city-grid { grid-template-columns: repeat(4,1fr); }
     }
   </style>
 </head>
 <body>
+<div class="fog-overlay" id="fogOverlay"></div>
 <div class="container">
+  <!-- رأس الصفحة -->
   <div class="card">
     <div class="header">
-      <h2>🎁 متجر المكافآت</h2>
-      <div class="points" id="pointsDisplay">0 نقطة</div>
+      <h1>🏙️ مدينة الإرادة | SimCity لمحاربة العادة</h1>
+      <div><span id="pointsDisplay">0</span> <span class="gold-text">نقطة</span></div>
     </div>
-    <p>استخدم نقاطك لشراء عناصر تبني حديقتك الداخلية. الهدف: اجمع 365 يوماً بدون عادة سيئة!</p>
+    <div class="flex-btns">
+      <button class="btn" id="successBtn">✅ نجحت اليوم (لا عادة سيئة) +10</button>
+      <button class="btn btn-danger" id="failBtn">❌ سقطت اليوم -30</button>
+    </div>
+    <div class="city-level-badge" id="cityLevelBadge">أرض فارغة</div>
   </div>
 
+  <!-- مدينة (الشبكة) -->
   <div class="card">
-    <h3>🌱 حديقة الإنجازات</h3>
-    <div id="sceneContainer" class="scene">
-      <!-- سيتم عرض العناصر المشتراة هنا -->
+    <h3>🗺️ مدينتك</h3>
+    <div id="cityGrid" class="city-grid"></div>
+    <div style="font-size:0.7rem; margin-top:8px;">🔍 مرر على المبنى لترى اسمه</div>
+  </div>
+
+  <!-- لوحة الإحصائيات -->
+  <div class="card">
+    <h3>📊 لوحة الإحصائيات</h3>
+    <div class="stats-dashboard" id="statsDashboard"></div>
+  </div>
+
+  <!-- المتجر (مباني + ديكور + معززات) -->
+  <div class="card">
+    <h3>🛒 متجر المدينة</h3>
+    <div id="shopContainer" class="shop-section"></div>
+  </div>
+
+  <!-- الإنجازات -->
+  <div class="card">
+    <h3>🏆 الإنجازات</h3>
+    <div id="achievementsList" class="achievements-list"></div>
+  </div>
+
+  <!-- سجل الأيام (تقويم) -->
+  <div class="card">
+    <h3>📅 سجل آخر 30 يوم</h3>
+    <div id="calendar" class="calendar-grid"></div>
+  </div>
+
+  <!-- أزرار إضافية -->
+  <div class="card">
+    <div style="display: flex; gap:10px; justify-content: flex-end;">
+      <button id="resetGameBtn" class="btn btn-danger">🗑️ إعادة ضبط اللعبة</button>
+      <button id="exportBtn" class="btn">📤 تصدير</button>
+      <button id="importBtn" class="btn">📥 استيراد</button>
     </div>
   </div>
-
-  <div class="card">
-    <h3>🛒 المتجر</h3>
-    <div id="shopContainer" class="shop-grid"></div>
-  </div>
-
-  <div>
-    <a href="index.html" class="back-link">← العودة إلى التطبيق الرئيسي</a>
-  </div>
+  <footer>✨ كل نجاح يبني مدينتك | الضباب الأسود يتراجع مع انتصاراتك | 365 يوم = أسطورة</footer>
 </div>
 
 <script>
-  // قائمة العناصر المتاحة للشراء
-  const ITEMS = [
-    { id: "tree", name: "شجرة", emoji: "🌳", cost: 50, svg: `<svg viewBox="0 0 24 24" fill="#38bdf8" width="40" height="40"><path d="M12 2L2 8l10 6 10-6-10-6zM2 17l10 6 10-6M2 12l10 6 10-6"/></svg>` },
-    { id: "flower", name: "زهرة", emoji: "🌸", cost: 30, svg: `<svg viewBox="0 0 24 24" fill="#facc15" width="40" height="40"><circle cx="12" cy="12" r="4"/><path d="M12 2v4M22 12h-4M12 22v-4M2 12h4M19 5l-3 3M5 5l3 3M5 19l3-3M19 19l-3-3"/></svg>` },
-    { id: "sun", name: "شمس", emoji: "☀️", cost: 80, svg: `<svg viewBox="0 0 24 24" fill="#facc15" width="40" height="40"><circle cx="12" cy="12" r="5"/><path d="M12 1v3M12 20v3M1 12h3M20 12h3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M17.7 6.3l2.1-2.1M4.2 19.8l2.1-2.1"/></svg>` },
-    { id: "cloud", name: "غيمة", emoji: "☁️", cost: 40, svg: `<svg viewBox="0 0 24 24" fill="#cbd5e1" width="40" height="40"><path d="M6 14c-2.2 0-4-1.8-4-4 0-2 1.5-3.6 3.5-3.9C6.2 4.3 8 3 10 3c3 0 5 2 5 5 0 1.5-.7 2.8-1.8 3.7C13.9 13.2 15 14.5 15 16c0 2.2-1.8 4-4 4H6c-2.2 0-4-1.8-4-4 0-1.8 1.2-3.3 2.8-3.8"/></svg>` },
-    { id: "star", name: "نجمة", emoji: "⭐", cost: 100, svg: `<svg viewBox="0 0 24 24" fill="#facc15" width="40" height="40"><polygon points="12 2 15 8.5 22 9.5 17 14.5 18.5 21.5 12 17.5 5.5 21.5 7 14.5 2 9.5 9 8.5 12 2"/></svg>` }
+  // ======================== بيانات اللعبة ========================
+  const STORAGE_KEY = "simcity_habit_v2";
+
+  // المباني والديكورات والمعززات
+  const BUILDINGS = [
+    { id: "tent", name: "خيمة", cost: 20, emoji: "🏕️", type: "building", description: "أول مأوى" },
+    { id: "house", name: "بيت صغير", cost: 100, emoji: "🏠", type: "building", description: "منزل متواضع" },
+    { id: "shop", name: "متجر صغير", cost: 200, emoji: "🏪", type: "building", description: "تجارة محلية" },
+    { id: "school", name: "مدرسة", cost: 350, emoji: "🏫", type: "building", description: "علم يبني عقولاً" },
+    { id: "library", name: "مكتبة", cost: 400, emoji: "📚", type: "building", description: "قوة المعرفة" },
+    { id: "spiritual", name: "مركز روحاني", cost: 450, emoji: "🕌", type: "building", description: "سلام داخلي" },
+    { id: "power", name: "محطة طاقة", cost: 500, emoji: "⚡", type: "building", description: "طاقة نظيفة" },
+    { id: "factory", name: "مصنع", cost: 700, emoji: "🏭", type: "building", description: "صناعة متطورة" },
+    { id: "tower", name: "برج كبير", cost: 1200, emoji: "🗼", type: "building", description: "شموخ المدينة" },
+    { id: "palace", name: "قصر الأسطورة", cost: 3000, emoji: "🏰", type: "building", description: "قمة الإنجاز" }
   ];
 
-  const STORAGE_KEY = "advanced_habits_v7";
+  const DECORATIONS = [
+    { id: "tree", name: "شجرة", cost: 15, emoji: "🌳", type: "decoration", description: "طبيعة خضراء" },
+    { id: "fountain", name: "نافورة", cost: 90, emoji: "⛲", type: "decoration", description: "جمال مائي" },
+    { id: "garden", name: "حديقة", cost: 150, emoji: "🌻", type: "decoration", description: "مساحات خضراء" },
+    { id: "statue", name: "تمثال", cost: 250, emoji: "🗿", type: "decoration", description: "رمز العزيمة" },
+    { id: "streetlight", name: "أضواء شارع", cost: 300, emoji: "💡", type: "decoration", description: "أنوار المدينة" }
+  ];
 
-  let userPoints = 0;
-  let purchasedItems = [];
+  const BOOSTERS = [
+    { id: "double", name: "مضاعف نقاط اليوم ×2", cost: 250, type: "booster", effect: "double", once: true, description: "ضعف النقاط في اليوم القادم" },
+    { id: "shield", name: "درع الحماية", cost: 700, type: "booster", effect: "shield", once: true, description: "يحمي streak من السقوط مرة واحدة" },
+    { id: "forgiveness", name: "يوم سماح", cost: 500, type: "booster", effect: "forgive", once: true, description: "يسجل يوماً ناجحاً بدون لعب" },
+    { id: "weeklyBonus", name: "زيادة مكافأة الأسبوع +20", cost: 800, type: "booster", effect: "weeklyBonus", once: true, description: "كل أسبوع يزيد المكافأة 20 نقطة" }
+  ];
 
-  function loadData() {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        // حساب النقاط من العادات
-        let habits = parsed.habits || [];
-        let history = parsed.history || {};
-        let totalPoints = 0;
-        for (let date in history) {
-          const day = history[date];
-          habits.forEach(habit => {
-            if (day[habit.id]) totalPoints += (habit.points || 5);
-          });
+  const ALL_ITEMS = [...BUILDINGS, ...DECORATIONS, ...BOOSTERS];
+
+  // حالة اللعبة
+  let state = {
+    points: 0,
+    streak: 0,          // الأيام المتتالية الناجحة
+    maxStreak: 0,
+    history: {},        // { "2025-03-27": "success" / "fail" / "missed" }
+    purchasedBuildings: [],  // قائمة بأسماء المباني المشتراة (مكررة) – كل عنصر { id, name, emoji, type }
+    cityGrid: [],       // مصفوفة 6x6 (36 خلية) تحتوي على كائنات المباني الموضوعة
+    boostersActive: { double: false, shield: false, weeklyBonusAdded: false },
+    dailyBonusMultiplier: 1,
+    lastSuccessDate: null,
+    totalSuccesses: 0,
+    totalFails: 0,
+    totalPointsEarned: 0,
+    totalPointsSpent: 0,
+    achievementsUnlocked: []
+  };
+
+  // تعريف الإنجازات
+  const ACHIEVEMENTS = [
+    { id: "first", name: "أول يوم نجاح", condition: (s) => s.totalSuccesses >= 1, reward: 50 },
+    { id: "3days", name: "3 أيام متتالية", condition: (s) => s.maxStreak >= 3, reward: 80 },
+    { id: "7days", name: "7 أيام", condition: (s) => s.maxStreak >= 7, reward: 150 },
+    { id: "14days", name: "14 يوم", condition: (s) => s.maxStreak >= 14, reward: 250 },
+    { id: "30days", name: "30 يوم", condition: (s) => s.maxStreak >= 30, reward: 500 },
+    { id: "60days", name: "60 يوم", condition: (s) => s.maxStreak >= 60, reward: 800 },
+    { id: "90days", name: "90 يوم", condition: (s) => s.maxStreak >= 90, reward: 1500 },
+    { id: "100days", name: "100 يوم", condition: (s) => s.maxStreak >= 100, reward: 2000 }
+  ];
+
+  // ========== دوال مساعدة ==========
+  function getTodayStr() {
+    return new Date().toISOString().slice(0,10);
+  }
+
+  function initGrid() {
+    if (state.cityGrid.length === 0) {
+      state.cityGrid = Array(36).fill(null);
+    }
+  }
+
+  // إضافة مبنى إلى أول خلية فارغة
+  function addBuildingToCity(buildingObj) {
+    const emptyIndex = state.cityGrid.findIndex(cell => cell === null);
+    if (emptyIndex === -1) {
+      alert("مدينتك ممتلئة! لا يمكنك إضافة المزيد.");
+      return false;
+    }
+    state.cityGrid[emptyIndex] = buildingObj;
+    return true;
+  }
+
+  // إزالة مبنى (بيع) – بسيط
+  function removeBuildingFromCity(index) {
+    if (index >= 0 && index < state.cityGrid.length && state.cityGrid[index] !== null) {
+      const item = state.cityGrid[index];
+      state.cityGrid[index] = null;
+      return item;
+    }
+    return null;
+  }
+
+  // شراء عنصر
+  function purchaseItem(itemId) {
+    const item = ALL_ITEMS.find(i => i.id === itemId);
+    if (!item) return false;
+    if (state.points < item.cost) {
+      alert("نقاط غير كافية!");
+      return false;
+    }
+    // معالجة حسب النوع
+    if (item.type === "building" || item.type === "decoration") {
+      const newItem = { id: item.id, name: item.name, emoji: item.emoji, type: item.type, cost: item.cost };
+      if (addBuildingToCity(newItem)) {
+        state.points -= item.cost;
+        state.totalPointsSpent += item.cost;
+        state.purchasedBuildings.push(newItem);
+        saveGame();
+        renderCity();
+        updateAllUI();
+        return true;
+      }
+    } else if (item.type === "booster") {
+      // معززات لمرة واحدة
+      if (item.id === "double") {
+        if (state.boostersActive.double) { alert("لديك مضاعف نشط بالفعل!"); return false; }
+        state.boostersActive.double = true;
+        state.points -= item.cost;
+        state.totalPointsSpent += item.cost;
+        alert("تم تفعيل مضاعف النقاط ليوم غد!");
+      } else if (item.id === "shield") {
+        if (state.boostersActive.shield) { alert("لديك درع بالفعل!"); return false; }
+        state.boostersActive.shield = true;
+        state.points -= item.cost;
+        state.totalPointsSpent += item.cost;
+        alert("الدرع مفعل! سيمنع خسارة الـ streak مرة واحدة.");
+      } else if (item.id === "forgiveness") {
+        // يوم سماح: يسجل اليوم نجاحاً تلقائياً
+        const today = getTodayStr();
+        if (state.history[today]) {
+          alert("اليوم مسجل بالفعل!");
+          return false;
         }
-        userPoints = totalPoints;
-        purchasedItems = parsed.purchasedItems || [];
-      } catch(e) { console.warn(e); }
+        state.history[today] = "success";
+        state.totalSuccesses++;
+        state.streak++;
+        if (state.streak > state.maxStreak) state.maxStreak = state.streak;
+        // نقاط السماح: 10 نقاط + مضاعف إن وجد
+        let earned = 10;
+        if (state.boostersActive.double) {
+          earned *= 2;
+          state.boostersActive.double = false;
+        }
+        state.points += earned;
+        state.totalPointsEarned += earned;
+        state.points -= item.cost;
+        state.totalPointsSpent += item.cost;
+        alert(`تم تفعيل يوم سماح! حصلت على ${earned} نقطة.`);
+        saveGame();
+        updateAllUI();
+        return true;
+      } else if (item.id === "weeklyBonus") {
+        if (state.boostersActive.weeklyBonusAdded) { alert("تم شراء هذه الميزة مسبقاً"); return false; }
+        state.boostersActive.weeklyBonusAdded = true;
+        state.points -= item.cost;
+        state.totalPointsSpent += item.cost;
+        alert("تم زيادة مكافأة الأسبوع! ستحصل على +20 إضافية عند تحقيق streak أسبوعي.");
+      }
+      saveGame();
+      updateAllUI();
+      return true;
     }
-    document.getElementById("pointsDisplay").innerText = `${userPoints} نقطة`;
+    return false;
   }
 
-  function savePurchased() {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      parsed.purchasedItems = purchasedItems;
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
-    } else {
-      // إنشاء هيكل جديد
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ habits: [], history: {}, purchasedItems: purchasedItems }));
-    }
-    // تحديث النقاط المعروضة بعد الشراء
-    loadData();
-  }
-
-  function renderScene() {
-    const container = document.getElementById("sceneContainer");
-    container.innerHTML = "";
-    if (purchasedItems.length === 0) {
-      container.innerHTML = '<div style="text-align:center; color:#94a3b8;">✨ اشترِ عناصر لبناء حديقتك ✨</div>';
+  // نجاح اليوم
+  function handleSuccess() {
+    const today = getTodayStr();
+    if (state.history[today]) {
+      alert("لقد سجلت اليوم بالفعل!");
       return;
     }
-    purchasedItems.forEach(itemId => {
-      const item = ITEMS.find(i => i.id === itemId);
-      if (item) {
-        const div = document.createElement("div");
-        div.className = "item";
-        div.innerHTML = item.svg;
-        div.title = item.name;
-        container.appendChild(div);
+    let pointsEarned = 10;
+    if (state.boostersActive.double) {
+      pointsEarned *= 2;
+      state.boostersActive.double = false;
+    }
+    state.points += pointsEarned;
+    state.totalPointsEarned += pointsEarned;
+    state.totalSuccesses++;
+    state.streak++;
+    if (state.streak > state.maxStreak) state.maxStreak = state.streak;
+
+    // مكافآت الـ streak (كل أسبوع، 14، 30، إلخ)
+    let bonus = 0;
+    if (state.streak === 7) bonus = 50;
+    else if (state.streak === 14) bonus = 120;
+    else if (state.streak === 30) bonus = 300;
+    else if (state.streak === 60) bonus = 700;
+    else if (state.streak === 90) bonus = 1500;
+    if (bonus > 0) {
+      state.points += bonus;
+      state.totalPointsEarned += bonus;
+      alert(`🎉 مكافأة سلسلة ${state.streak} يوم: +${bonus} نقطة!`);
+    }
+    // مكافأة أسبوعية معززة
+    if (state.boostersActive.weeklyBonusAdded && state.streak % 7 === 0 && state.streak !== 0) {
+      state.points += 20;
+      state.totalPointsEarned += 20;
+      alert(`✨ مكافأة أسبوعية إضافية +20 نقطة!`);
+    }
+
+    state.history[today] = "success";
+    saveGame();
+    checkAchievements();
+    updateAllUI();
+    applyFogAndCityLevel();
+  }
+
+  // فشل اليوم
+  function handleFail() {
+    const today = getTodayStr();
+    if (state.history[today]) {
+      alert("اليوم مسجل بالفعل!");
+      return;
+    }
+    let penalty = 30;
+    state.points = Math.max(0, state.points - penalty);
+    state.totalPointsEarned = Math.max(0, state.totalPointsEarned - penalty);
+    state.totalFails++;
+    // درع الحماية
+    if (state.boostersActive.shield) {
+      state.boostersActive.shield = false;
+      alert("🛡️ تم تفعيل الدرع! لم تخسر الـ streak.");
+    } else {
+      state.streak = 0;
+    }
+    state.history[today] = "fail";
+    saveGame();
+    checkAchievements();
+    updateAllUI();
+    applyFogAndCityLevel();
+  }
+
+  // حساب إجمالي قيمة المباني المشتراة
+  function getTotalBuildingValue() {
+    let total = 0;
+    for (let cell of state.cityGrid) {
+      if (cell && (cell.type === "building" || cell.type === "decoration")) {
+        const original = ALL_ITEMS.find(i => i.id === cell.id);
+        if (original) total += original.cost;
       }
+    }
+    return total;
+  }
+
+  // تحديث مرحلة المدينة بناءً على قيمة المباني
+  function updateCityLevel() {
+    const value = getTotalBuildingValue();
+    let level = 1;
+    if (value >= 5000) level = 5;
+    else if (value >= 2500) level = 4;
+    else if (value >= 1000) level = 3;
+    else if (value >= 300) level = 2;
+    else level = 1;
+    const levelNames = ["أرض فارغة", "قرية صغيرة", "مدينة ناشئة", "مدينة متطورة", "مدينة الأسطورة"];
+    document.getElementById("cityLevelBadge").innerHTML = levelNames[level-1];
+    document.body.className = `city-level-${level}`;
+    return level;
+  }
+
+  // تأثير الضباب: كلما قلت الـ streak زاد الضباب
+  function applyFogAndCityLevel() {
+    const fog = document.getElementById("fogOverlay");
+    let opacity = Math.max(0, 0.4 - (state.streak / 100));
+    if (state.streak < 3) opacity = 0.6;
+    if (state.streak === 0) opacity = 0.75;
+    fog.style.opacity = opacity;
+    updateCityLevel();
+  }
+
+  // عرض المدينة
+  function renderCity() {
+    const gridDiv = document.getElementById("cityGrid");
+    gridDiv.innerHTML = "";
+    for (let i = 0; i < state.cityGrid.length; i++) {
+      const cell = state.cityGrid[i];
+      const tile = document.createElement("div");
+      tile.className = "city-tile";
+      if (cell) {
+        tile.innerHTML = `${cell.emoji}<span class="building-tooltip">${cell.name}</span>`;
+        // إضافة خاصية بيع عند الضغط الطويل (اختياري)
+        tile.oncontextmenu = (e) => {
+          e.preventDefault();
+          if (confirm(`بيع ${cell.name} مقابل ${Math.floor(cell.cost/2)} نقطة؟`)) {
+            state.points += Math.floor(cell.cost/2);
+            state.totalPointsEarned += Math.floor(cell.cost/2);
+            state.cityGrid[i] = null;
+            saveGame();
+            renderCity();
+            updateAllUI();
+          }
+          return false;
+        };
+      } else {
+        tile.innerHTML = "⬜";
+        tile.oncontextmenu = null;
+      }
+      gridDiv.appendChild(tile);
+    }
+  }
+
+  // عرض الإحصائيات
+  function renderStats() {
+    const successRate = (state.totalSuccesses + state.totalFails) === 0 ? 0 : Math.round((state.totalSuccesses / (state.totalSuccesses + state.totalFails)) * 100);
+    const statsHtml = `
+      <div class="stat-card"><div class="stat-value">${state.totalSuccesses}</div><div>✅ نجاحات</div></div>
+      <div class="stat-card"><div class="stat-value">${state.totalFails}</div><div>❌ سقطات</div></div>
+      <div class="stat-card"><div class="stat-value">${state.streak}</div><div>🔥 الـ streak الحالي</div></div>
+      <div class="stat-card"><div class="stat-value">${state.maxStreak}</div><div>🏆 أطول streak</div></div>
+      <div class="stat-card"><div class="stat-value">${state.totalPointsEarned}</div><div>💰 إجمالي نقاط مكتسبة</div></div>
+      <div class="stat-card"><div class="stat-value">${state.totalPointsSpent}</div><div>🛒 نقاط مصروفة</div></div>
+      <div class="stat-card"><div class="stat-value">${successRate}%</div><div>📊 نسبة النجاح</div></div>
+    `;
+    document.getElementById("statsDashboard").innerHTML = statsHtml;
+  }
+
+  // عرض التقويم (آخر 30 يوم)
+  function renderCalendar() {
+    const calendarDiv = document.getElementById("calendar");
+    calendarDiv.innerHTML = "";
+    const today = new Date();
+    const days = [];
+    for (let i = 29; i >= 0; i--) {
+      let d = new Date(today);
+      d.setDate(today.getDate() - i);
+      days.push(d.toISOString().slice(0,10));
+    }
+    days.forEach(dateStr => {
+      const status = state.history[dateStr];
+      let statusClass = "missed";
+      let symbol = "◻️";
+      if (status === "success") { statusClass = "success"; symbol = "✅"; }
+      else if (status === "fail") { statusClass = "fail"; symbol = "❌"; }
+      const dayDiv = document.createElement("div");
+      dayDiv.className = `cal-day ${statusClass}`;
+      dayDiv.innerHTML = `${new Date(dateStr).getDate()}<br>${symbol}`;
+      calendarDiv.appendChild(dayDiv);
     });
   }
 
+  // عرض المتجر
   function renderShop() {
-    const container = document.getElementById("shopContainer");
-    container.innerHTML = "";
-    ITEMS.forEach(item => {
-      const alreadyOwned = purchasedItems.includes(item.id);
-      const canAfford = userPoints >= item.cost;
-      const div = document.createElement("div");
-      div.className = `shop-item ${(!canAfford || alreadyOwned) ? 'disabled' : ''}`;
-      div.innerHTML = `
+    const shopDiv = document.getElementById("shopContainer");
+    shopDiv.innerHTML = "";
+    ALL_ITEMS.forEach(item => {
+      const btn = document.createElement("div");
+      btn.className = "shop-item";
+      btn.innerHTML = `
         <div style="font-size:2rem;">${item.emoji}</div>
         <div><strong>${item.name}</strong></div>
-        <div class="price">${item.cost} نقطة</div>
-        ${alreadyOwned ? '<div style="color:#10b981;">✓ مملوك</div>' : ''}
+        <div class="shop-price">${item.cost} نقطة</div>
+        <div style="font-size:0.6rem;">${item.description}</div>
       `;
-      if (!alreadyOwned && canAfford) {
-        div.addEventListener("click", () => {
-          if (confirm(`شراء ${item.name} مقابل ${item.cost} نقطة؟`)) {
-            purchasedItems.push(item.id);
-            userPoints -= item.cost;
-            savePurchased();
-            renderScene();
-            renderShop();
-            document.getElementById("pointsDisplay").innerText = `${userPoints} نقطة`;
-          }
-        });
-      }
-      container.appendChild(div);
+      btn.onclick = () => purchaseItem(item.id);
+      shopDiv.appendChild(btn);
     });
   }
 
-  loadData();
-  renderScene();
-  renderShop();
+  // التحقق من الإنجازات
+  function checkAchievements() {
+    let newUnlocked = false;
+    for (let ach of ACHIEVEMENTS) {
+      if (!state.achievementsUnlocked.includes(ach.id) && ach.condition(state)) {
+        state.achievementsUnlocked.push(ach.id);
+        state.points += ach.reward;
+        state.totalPointsEarned += ach.reward;
+        newUnlocked = true;
+        alert(`🏆 إنجاز جديد: ${ach.name}! حصلت على ${ach.reward} نقطة إضافية.`);
+      }
+    }
+    if (newUnlocked) saveGame();
+    renderAchievements();
+  }
+
+  function renderAchievements() {
+    const container = document.getElementById("achievementsList");
+    container.innerHTML = "";
+    ACHIEVEMENTS.forEach(ach => {
+      const unlocked = state.achievementsUnlocked.includes(ach.id);
+      const badge = document.createElement("div");
+      badge.className = `achievement-badge ${!unlocked ? 'locked' : ''}`;
+      badge.innerHTML = `${ach.name} ${unlocked ? '✅' : '🔒'} ${unlocked ? `+${ach.reward}` : ''}`;
+      container.appendChild(badge);
+    });
+  }
+
+  // تحديث كل الواجهة
+  function updateAllUI() {
+    document.getElementById("pointsDisplay").innerHTML = state.points;
+    renderCity();
+    renderStats();
+    renderCalendar();
+    renderShop();
+    renderAchievements();
+    applyFogAndCityLevel();
+  }
+
+  // حفظ اللعبة
+  function saveGame() {
+    const toSave = {
+      points: state.points,
+      streak: state.streak,
+      maxStreak: state.maxStreak,
+      history: state.history,
+      purchasedBuildings: state.purchasedBuildings,
+      cityGrid: state.cityGrid,
+      boostersActive: state.boostersActive,
+      totalSuccesses: state.totalSuccesses,
+      totalFails: state.totalFails,
+      totalPointsEarned: state.totalPointsEarned,
+      totalPointsSpent: state.totalPointsSpent,
+      achievementsUnlocked: state.achievementsUnlocked
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+  }
+
+  // تحميل اللعبة
+  function loadGame() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        const data = JSON.parse(saved);
+        state = { ...state, ...data };
+        // ضمان وجود cityGrid
+        if (!state.cityGrid || state.cityGrid.length !== 36) initGrid();
+        if (!state.boostersActive) state.boostersActive = { double: false, shield: false, weeklyBonusAdded: false };
+        if (!state.totalPointsEarned) state.totalPointsEarned = state.points;
+        if (!state.totalPointsSpent) state.totalPointsSpent = 0;
+        if (!state.achievementsUnlocked) state.achievementsUnlocked = [];
+      } catch(e) {}
+    } else {
+      initGrid();
+    }
+    // التأكد من عدم وجود أيام مفقودة في الـ history (لن يتم ملء تلقائياً)
+    updateAllUI();
+  }
+
+  // إعادة ضبط كامل
+  function resetGame() {
+    if (confirm("سيتم حذف كل تقدمك بالكامل. هل أنت متأكد؟")) {
+      localStorage.removeItem(STORAGE_KEY);
+      location.reload();
+    }
+  }
+
+  // تصدير واستيراد
+  function exportGame() {
+    const dataStr = JSON.stringify(localStorage.getItem(STORAGE_KEY));
+    const blob = new Blob([dataStr], {type: "application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `simcity_save_${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function importGame(file) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const imported = JSON.parse(e.target.result);
+        localStorage.setItem(STORAGE_KEY, imported);
+        location.reload();
+      } catch(err) { alert("ملف غير صالح"); }
+    };
+    reader.readAsText(file);
+  }
+
+  // ربط الأحداث
+  document.getElementById("successBtn").addEventListener("click", handleSuccess);
+  document.getElementById("failBtn").addEventListener("click", handleFail);
+  document.getElementById("resetGameBtn").addEventListener("click", resetGame);
+  document.getElementById("exportBtn").addEventListener("click", exportGame);
+  const importInput = document.createElement("input");
+  importInput.type = "file";
+  importInput.accept = "application/json";
+  document.getElementById("importBtn").addEventListener("click", () => importInput.click());
+  importInput.addEventListener("change", (e) => {
+    if (e.target.files[0]) importGame(e.target.files[0]);
+  });
+
+  // بدء اللعبة
+  loadGame();
+  updateAllUI();
+  // فحص يوم جديد (إذا لم يسجل اليوم)
+  const today = getTodayStr();
+  if (!state.history[today]) {
+    // لا شيء، المستخدم يختار
+  }
 </script>
 </body>
 </html>
