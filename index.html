@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#0b1120">
-  <title>يومياتي | تتبع العادات الذكي</title>
+  <meta name="theme-color" content="#030617">
+  <title>يومياتي الذكية | تتبع العادات</title>
   <style>
     * {
       margin: 0;
@@ -15,16 +15,17 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    /* خلفية داكنة جداً */
     body {
       font-family: 'Segoe UI', 'Tajawal', system-ui, sans-serif;
-      background: radial-gradient(circle at 20% 30%, #0b1120, #030617);
+      background: #030617;  /* لون خلفية داكن موحد */
       color: #e2e8f0;
       padding: 1rem;
       position: relative;
       min-height: 100vh;
     }
 
-    /* جزيئات خلفية */
+    /* جزيئات متحركة خفيفة */
     .particles {
       position: fixed;
       top: 0;
@@ -36,7 +37,7 @@
     }
     .particle {
       position: absolute;
-      background: rgba(56, 189, 248, 0.3);
+      background: rgba(56, 189, 248, 0.25);
       border-radius: 50%;
       animation: float 12s infinite ease-in-out;
       filter: blur(2px);
@@ -54,10 +55,10 @@
       z-index: 2;
     }
 
-    /* بطاقات عامة */
+    /* بطاقات زجاجية */
     .card {
-      background: rgba(15, 25, 45, 0.7);
-      backdrop-filter: blur(12px);
+      background: rgba(15, 25, 45, 0.8);
+      backdrop-filter: blur(10px);
       border-radius: 2rem;
       padding: 1.2rem;
       margin-bottom: 1.2rem;
@@ -67,7 +68,7 @@
     .card:hover {
       transform: translateY(-3px);
       border-color: #38bdf8;
-      box-shadow: 0 15px 30px -10px rgba(0,0,0,0.4);
+      box-shadow: 0 15px 30px -10px rgba(0,0,0,0.5);
     }
 
     /* رأس الصفحة */
@@ -100,7 +101,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: rgba(0,0,0,0.3);
+      background: rgba(0,0,0,0.4);
       border-radius: 3rem;
       padding: 0.5rem;
     }
@@ -129,14 +130,63 @@
       color: white;
     }
 
-    /* ========== الإحصائيات الذكية (التصميم الجديد) ========== */
+    /* قائمة العادات */
+    .habits-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+    .habit-item {
+      background: rgba(0,0,0,0.4);
+      border-radius: 1.5rem;
+      padding: 0.8rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .habit-info {
+      display: flex;
+      gap: 0.8rem;
+      align-items: center;
+    }
+    .habit-icon svg { width: 28px; height: 28px; }
+    .habit-name {
+      font-weight: 500;
+    }
+    .habit-check {
+      width: 36px;
+      height: 36px;
+      border-radius: 36px;
+      background: #1e293b;
+      border: 2px solid #475569;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+    .habit-check.completed {
+      background: #10b981;
+      border-color: #10b981;
+      color: white;
+    }
+    .delete-habit {
+      background: none;
+      border: none;
+      color: #f43f5e;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    /* ========== لوحة الإحصائيات الجديدة ========== */
     .stats-dashboard {
       display: flex;
       flex-direction: column;
       gap: 1rem;
     }
 
-    /* صف علوي: بطاقات دائرية */
+    /* دوائر متحركة */
     .stats-row-circles {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -147,8 +197,6 @@
       border-radius: 1.5rem;
       padding: 1rem;
       text-align: center;
-      backdrop-filter: blur(4px);
-      border: 1px solid rgba(56,189,248,0.2);
     }
     .circle-chart {
       position: relative;
@@ -185,7 +233,7 @@
       margin-top: 4px;
     }
 
-    /* صف ثاني: بطاقات تقدم */
+    /* أشرطة التقدم */
     .stats-progress-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -217,40 +265,24 @@
     }
 
     /* باقي العناصر */
-    .habits-list {
+    .add-habit {
       display: flex;
-      flex-direction: column;
-      gap: 0.8rem;
+      gap: 0.5rem;
       margin-top: 1rem;
     }
-    .habit-item {
-      background: rgba(0,0,0,0.3);
-      border-radius: 1.5rem;
-      padding: 0.8rem 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    .add-habit input {
+      flex: 1;
+      background: #0f172a;
+      border: 1px solid #38bdf8;
+      border-radius: 2rem;
+      padding: 0.5rem;
+      color: white;
     }
-    .habit-info {
-      display: flex;
-      gap: 0.8rem;
-      align-items: center;
-    }
-    .habit-icon svg { width: 28px; height: 28px; }
-    .habit-check {
-      width: 36px;
-      height: 36px;
-      border-radius: 36px;
-      background: #1e293b;
-      border: 2px solid #475569;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-    }
-    .habit-check.completed {
-      background: #10b981;
-      border-color: #10b981;
+    .add-habit select {
+      background: #0f172a;
+      border: 1px solid #38bdf8;
+      border-radius: 2rem;
+      padding: 0.5rem;
       color: white;
     }
     .btn {
@@ -286,6 +318,7 @@
       color: #94a3b8;
       font-size: 0.8rem;
     }
+
     @media (max-width: 600px) {
       .stats-row-circles { grid-template-columns: repeat(2,1fr); }
       .stats-progress-grid { grid-template-columns: 1fr; }
@@ -315,16 +348,16 @@
       <span id="completionBadge" style="background:#1e293b; padding:2px 12px; border-radius:2rem;">0%</span>
     </div>
     <div id="habitsContainer" class="habits-list"></div>
-    <div class="add-habit" style="display: flex; gap:0.5rem; margin-top:1rem;">
-      <input type="text" id="newHabitName" placeholder="عادة جديدة" style="flex:1; background:#0f172a; border:1px solid #38bdf8; border-radius:2rem; padding:0.5rem; color:white;">
-      <select id="newHabitIcon" style="background:#0f172a; border:1px solid #38bdf8; border-radius:2rem; padding:0.5rem;">
+    <div class="add-habit">
+      <input type="text" id="newHabitName" placeholder="عادة جديدة...">
+      <select id="newHabitIcon">
         <option value="star">⭐</option><option value="heart">❤️</option><option value="sport">🏃</option><option value="read">📖</option>
       </select>
       <button id="addHabitBtn" class="btn">➕ أضف</button>
     </div>
   </div>
 
-  <!-- ========== لوحة الإحصائيات الذكية (التصميم الجديد) ========== -->
+  <!-- لوحة الإحصائيات الذكية -->
   <div class="card">
     <h3 style="margin-bottom: 1rem;">📊 إحصائيات ذكية</h3>
     <div class="stats-dashboard">
@@ -426,7 +459,7 @@
 </div>
 
 <script>
-  // ========== أيقونات SVG (مختصرة للعادات) ==========
+  // ========== أيقونات SVG ==========
   const ICONS = {
     no_bad: `<svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4" y1="4" x2="20" y2="20"/></svg>`,
     pray: `<svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`,
@@ -440,7 +473,7 @@
   let HABITS = [];
   let appData = { habitsHistory: {}, purchasedItems: [] };
   let currentDate = new Date().toISOString().slice(0,10);
-  const STORAGE_KEY = "ultimate_habits_v2";
+  const STORAGE_KEY = "ultimate_habits_v3";
 
   function initDefaultHabits() {
     return [
@@ -536,7 +569,7 @@
         </div>
         <div class="habit-actions">
           <div class="habit-check ${completed ? 'completed' : ''}" data-id="${habit.id}">${completed ? '✓' : '○'}</div>
-          <button class="delete-habit" data-id="${habit.id}" style="background:none; border:none; color:#f43f5e; font-size:1.2rem;">🗑️</button>
+          <button class="delete-habit" data-id="${habit.id}">🗑️</button>
         </div>
       `;
       const check = div.querySelector(".habit-check");
@@ -547,7 +580,6 @@
     });
   }
 
-  // دوال الإحصائيات
   function calculateTotalPoints() {
     let total = 0;
     for (let date in appData.habitsHistory) {
@@ -602,18 +634,20 @@
       const allDone = HABITS.every(h => day[h.id] === true);
       if (allDone) success++;
       else if (Object.values(day).some(v => v === true)) fail++;
-      // إذا لم يتم تسجيل شيء، لا يحسب
     }
     return { success, fail };
   }
 
   function getTotalPointsStats() {
-    let earned = 0, spent = 0;
+    let earned = 0;
     for (let date in appData.habitsHistory) {
       const day = appData.habitsHistory[date];
       HABITS.forEach(h => { if (day[h.id]) earned += h.points; });
     }
-    spent = appData.purchasedItems.reduce((sum, item) => sum + (item.cost || 0), 0);
+    let spent = 0;
+    if (appData.purchasedItems) {
+      spent = appData.purchasedItems.reduce((sum, item) => sum + (item.cost || 0), 0);
+    }
     return { earned, spent };
   }
 
@@ -641,22 +675,17 @@
   function updateAllStats() {
     const { completed, total, percent } = getTodayCompletion();
     document.getElementById("completionBadge").innerHTML = `${percent}%`;
-    // تحديث الدوائر
-    const circumference = 2 * Math.PI * 42; // ~264
+    const circumference = 264; // 2*pi*42 ≈ 264
     const todayPercent = percent / 100;
     document.getElementById("todayProgressCircle").setAttribute("stroke-dasharray", `${todayPercent * circumference}, ${circumference}`);
     document.getElementById("todayPercentValue").innerHTML = `${percent}%`;
 
     const streak = getPerfectStreak();
-    const maxStreak = Math.max(streak, ...Object.values(appData.habitsHistory).map(d => {
-      let s = 0, max = 0;
-      // مبسط: نعتمد على streak الحالي كأفضل مؤقتاً
-      return streak;
-    }));
     document.getElementById("streakValue").innerHTML = streak;
-    document.getElementById("maxStreakValue").innerHTML = streak; // مبسط
+    document.getElementById("maxStreakValue").innerHTML = streak;
     const streakPercent = Math.min(1, streak / 365);
     document.getElementById("streakCircle").setAttribute("stroke-dasharray", `${streakPercent * circumference}, ${circumference}`);
+    document.getElementById("maxStreakCircle").setAttribute("stroke-dasharray", `${streakPercent * circumference}, ${circumference}`);
 
     const perfectDays = getPerfectDaysCount();
     document.getElementById("perfectDaysValue").innerHTML = perfectDays;
@@ -687,7 +716,6 @@
     document.getElementById("pointsDisplay").innerHTML = `${calculateTotalPoints()} نقطة`;
   }
 
-  // تحديث التاريخ والعادات
   function updateDateDisplay() {
     const d = new Date(currentDate + "T12:00:00");
     document.getElementById("currentDateLabel").innerHTML = `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
@@ -772,7 +800,6 @@
     document.getElementById("importBtn").addEventListener("click", () => importInput.click());
     importInput.addEventListener("change", (e) => { if (e.target.files[0]) importGame(e.target.files[0]); });
 
-    // إضافة مدخل الهدف الأسبوعي إذا لم يكن موجوداً
     if (!document.getElementById("weeklyGoalInput")) {
       const goalDiv = document.createElement("div");
       goalDiv.style.display = "none";
