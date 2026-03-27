@@ -14,7 +14,7 @@
       padding: 0;
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
-      user-select: none; /* منع الضغط المطول للنسخ */
+      user-select: none;
     }
 
     body {
@@ -28,7 +28,6 @@
       overflow-x: hidden;
     }
 
-    /* جزيئات متحركة */
     .particles {
       position: fixed;
       top: 0;
@@ -59,11 +58,9 @@
       z-index: 2;
     }
 
-    /* بطاقات زجاجية مع حواف مضيئة */
     .card {
       background: rgba(12, 18, 34, 0.7);
       backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
       border-radius: 32px;
       padding: 1.25rem 1rem;
       box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.03);
@@ -73,18 +70,10 @@
     .card:hover {
       transform: translateY(-3px);
       border-color: rgba(56, 189, 248, 0.5);
-      box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.5);
     }
 
-    /* تدرجات النصوص */
     .gradient-text {
       background: linear-gradient(135deg, #38bdf8, #a78bfa, #f472b6);
-      background-clip: text;
-      -webkit-background-clip: text;
-      color: transparent;
-    }
-    .gold-text {
-      background: linear-gradient(135deg, #facc15, #f97316);
       background-clip: text;
       -webkit-background-clip: text;
       color: transparent;
@@ -104,7 +93,6 @@
       color: #94a3b8;
     }
 
-    /* شريط التاريخ */
     .date-bar {
       display: flex;
       align-items: center;
@@ -144,7 +132,6 @@
       box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
     }
 
-    /* قائمة العادات */
     .habits-list {
       display: flex;
       flex-direction: column;
@@ -160,7 +147,6 @@
       padding: 0.9rem 1rem;
       border-radius: 24px;
       border: 1px solid rgba(56, 189, 248, 0.2);
-      transition: all 0.25s ease;
     }
     .habit-item:hover {
       border-color: #38bdf8;
@@ -176,7 +162,6 @@
     .habit-icon {
       width: 32px;
       height: 32px;
-      flex-shrink: 0;
     }
     .habit-icon svg {
       width: 26px;
@@ -218,7 +203,6 @@
       padding: 5px;
     }
 
-    /* نقاط وجوائز خاصة */
     .score-card {
       background: linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(250, 204, 21, 0.2));
       border-radius: 24px;
@@ -246,43 +230,38 @@
       margin: 5px;
       display: inline-block;
     }
-
-    /* إضافات متقدمة */
-    .insight-card {
+    .year-progress {
       background: rgba(0, 0, 0, 0.3);
       border-radius: 24px;
       padding: 12px;
       margin-top: 12px;
     }
-    .mood-selector {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      margin: 10px 0;
+    .progress-bar {
+      background: #334155;
+      border-radius: 20px;
+      height: 8px;
+      overflow: hidden;
+      margin-top: 8px;
     }
-    .mood-btn {
-      background: rgba(30, 41, 59, 0.8);
-      border: 1px solid #475569;
-      border-radius: 40px;
-      padding: 6px 12px;
-      cursor: pointer;
-      color: #94a3b8;
-      transition: all 0.2s;
-    }
-    .mood-btn.selected {
-      background: #38bdf8;
-      color: #0f172a;
-      border-color: #38bdf8;
-    }
-    .focus-mode {
-      background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(168, 85, 247, 0.2));
-      border-radius: 24px;
-      padding: 12px;
-      margin-top: 12px;
-      text-align: center;
+    .progress-fill {
+      background: linear-gradient(90deg, #38bdf8, #a78bfa);
+      width: 0%;
+      height: 100%;
+      transition: width 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1);
     }
 
-    /* إحصائيات */
+    .rewards-link {
+      display: inline-block;
+      background: linear-gradient(135deg, #38bdf8, #818cf8);
+      color: white;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 40px;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 10px;
+    }
+
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
@@ -303,19 +282,6 @@
       -webkit-background-clip: text;
       color: transparent;
       direction: ltr;
-    }
-    .progress-bar {
-      background: #334155;
-      border-radius: 20px;
-      height: 8px;
-      overflow: hidden;
-      margin-top: 8px;
-    }
-    .progress-fill {
-      background: linear-gradient(90deg, #38bdf8, #a78bfa);
-      width: 0%;
-      height: 100%;
-      transition: width 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1);
     }
     .badges {
       display: flex;
@@ -413,7 +379,7 @@
   <div class="card">
     <div class="header">
       <h1>📆 يومياتي المتقدمة</h1>
-      <p>تتبع عاداتك بدقة ذكية + تحليلات عميقة + جوائز</p>
+      <p>تتبع عاداتك بدقة ذكية + نظام مكافآت</p>
     </div>
   </div>
 
@@ -441,7 +407,7 @@
     </div>
   </div>
 
-  <!-- بطاقة النقاط والجوائز -->
+  <!-- نقاط وجوائز ورابط المتجر -->
   <div class="card">
     <div style="font-weight:800; margin-bottom:8px;">🏆 نظام النقاط الذكي</div>
     <div class="score-card">
@@ -450,26 +416,12 @@
       <div style="font-size:0.7rem;">كل عادة = 5 نقاط | عادة "لا عادة سيئة" = 10 نقاط</div>
     </div>
     <div id="prizesContainer" class="badges" style="justify-content:center;"></div>
-  </div>
-
-  <!-- المزاج والملاحظات -->
-  <div class="card">
-    <div style="font-weight:800;">😊 كيف كان مزاجك اليوم؟</div>
-    <div class="mood-selector" id="moodSelector">
-      <button class="mood-btn" data-mood="happy">😊 سعيد</button>
-      <button class="mood-btn" data-mood="neutral">😐 عادي</button>
-      <button class="mood-btn" data-mood="sad">😔 حزين</button>
-      <button class="mood-btn" data-mood="energy">⚡ نشيط</button>
+    <div class="year-progress">
+      <div>🎯 الهدف الكبير: سنة كاملة بدون عادة سيئة (365 يوماً)</div>
+      <div class="progress-bar"><div class="progress-fill" id="yearProgressFill"></div></div>
+      <div style="font-size:0.7rem; margin-top:4px;" id="yearProgressText"></div>
     </div>
-    <textarea id="dailyNote" placeholder="أضف ملاحظاتك اليومية..." rows="2" style="width:100%; background:rgba(0,0,0,0.5); border:1px solid #38bdf8; border-radius:20px; padding:8px; color:#e2e8f0; margin-top:8px;"></textarea>
-  </div>
-
-  <!-- وضع التركيز -->
-  <div class="card focus-mode" id="focusCard">
-    <div style="font-weight:800;">🎯 وضع التركيز</div>
-    <select id="focusHabitSelect" style="background:rgba(0,0,0,0.5); border:1px solid #38bdf8; border-radius:40px; padding:6px 12px; margin-top:8px;"></select>
-    <button id="startFocusBtn" class="small-btn" style="margin-top:8px;">ابدأ التركيز</button>
-    <div id="focusTimer" style="margin-top:8px; font-size:1.2rem; font-family:monospace;"></div>
+    <a href="rewards.html" class="rewards-link" style="display:block; text-align:center;">🎁 متجر المكافآت (اصرف نقاطك)</a>
   </div>
 
   <div class="card">
@@ -504,12 +456,6 @@
       <canvas id="weeklyChart" width="400" height="150" style="width:100%; height:150px; background:rgba(0,0,0,0.3); border-radius:16px;"></canvas>
     </div>
 
-    <!-- رؤى ذكية -->
-    <div class="insight-card">
-      <div style="font-weight:600;">💡 رؤى ذكية</div>
-      <div id="insightText" style="font-size:0.8rem; margin-top:8px;">...</div>
-    </div>
-
     <div class="export-import">
       <button id="exportDataBtn" class="small-btn">📤 تصدير البيانات</button>
       <button id="importDataBtn" class="small-btn">📥 استيراد</button>
@@ -521,7 +467,7 @@
 </div>
 
 <script>
-  // أيقونات SVG مدمجة
+  // أيقونات SVG (نفس السابق)
   const ICONS = {
     no_bad: `<svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4" y1="4" x2="20" y2="20"/></svg>`,
     pray: `<svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`,
@@ -532,9 +478,8 @@
     sport: `<svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M6 12c0 4 2 8 6 8s6-4 6-8-2-8-6-8-6 4-6 8z"/><path d="M12 4v16M4 12h16"/></svg>`
   };
 
-  // البيانات الأساسية
   let HABITS = [];
-  let appData = { habitsHistory: {}, moodLog: {}, notes: {} };
+  let appData = { habitsHistory: {}, purchasedItems: [] };
   let currentDate = new Date().toISOString().slice(0,10);
   const STORAGE_KEY = "advanced_habits_v7";
 
@@ -554,12 +499,11 @@
         const parsed = JSON.parse(stored);
         HABITS = parsed.habits || initDefaultHabits();
         appData.habitsHistory = parsed.history || {};
-        appData.moodLog = parsed.moodLog || {};
-        appData.notes = parsed.notes || {};
+        appData.purchasedItems = parsed.purchasedItems || [];
       } catch(e) { console.warn(e); }
     } else {
       HABITS = initDefaultHabits();
-      appData = { habitsHistory: {}, moodLog: {}, notes: {} };
+      appData = { habitsHistory: {}, purchasedItems: [] };
     }
     for (let date in appData.habitsHistory) {
       const day = appData.habitsHistory[date];
@@ -572,8 +516,7 @@
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
       habits: HABITS,
       history: appData.habitsHistory,
-      moodLog: appData.moodLog,
-      notes: appData.notes
+      purchasedItems: appData.purchasedItems
     }));
   }
 
@@ -612,7 +555,7 @@
   }
 
   function deleteHabit(habitId) {
-    if (confirm("هل تريد حذف هذه العادة؟ سيتم فقدان بياناتها السابقة.")) {
+    if (confirm("هل تريد حذف هذه العادة؟")) {
       HABITS = HABITS.filter(h => h.id !== habitId);
       for (let date in appData.habitsHistory) {
         delete appData.habitsHistory[date][habitId];
@@ -644,8 +587,7 @@
       const checkBtn = div.querySelector(".habit-check");
       checkBtn.addEventListener("click", (e) => {
         e.stopPropagation();
-        const newStatus = !completed;
-        setHabitStatus(currentDate, habit.id, newStatus);
+        setHabitStatus(currentDate, habit.id, !completed);
       });
       const delBtn = div.querySelector(".delete-habit");
       delBtn.addEventListener("click", (e) => {
@@ -656,21 +598,17 @@
     });
   }
 
-  // حساب النقاط الإجمالية
   function calculateTotalScore() {
     let score = 0;
     for (let date in appData.habitsHistory) {
       const day = appData.habitsHistory[date];
       HABITS.forEach(habit => {
-        if (day[habit.id]) {
-          score += habit.points;
-        }
+        if (day[habit.id]) score += habit.points;
       });
     }
     return score;
   }
 
-  // الحصول على سلسلة "لا عادة سيئة"
   function getBadHabitStreak() {
     let streak = 0;
     let today = new Date();
@@ -685,7 +623,6 @@
     return streak;
   }
 
-  // تحديث الجوائز (نقاط عامة وجوائز عادة "لا عادة سيئة")
   function updatePrizes() {
     const totalScore = calculateTotalScore();
     const badStreak = getBadHabitStreak();
@@ -695,13 +632,17 @@
     if (totalScore >= 300) prizes.push("🏆 300 نقطة");
     if (totalScore >= 500) prizes.push("🎖️ 500 نقطة");
     if (badStreak >= 7) prizes.push("🔥 سلسلة 7 أيام بدون عادة سيئة");
-    if (badStreak >= 30) prizes.push("💎 سلسلة 30 يوماً خالية من العادات السيئة");
+    if (badStreak >= 30) prizes.push("💎 سلسلة 30 يوماً خالية");
     if (prizes.length === 0) prizes.push("ابدأ رحلتك لتحصل على جوائز!");
     prizesDiv.innerHTML = prizes.map(p => `<div class="prize-badge">${p}</div>`).join("");
     document.getElementById("totalScore").innerText = totalScore;
+
+    // تحديث شريط سنة كاملة
+    const yearProgress = Math.min(100, (badStreak / 365) * 100);
+    document.getElementById("yearProgressFill").style.width = yearProgress + "%";
+    document.getElementById("yearProgressText").innerHTML = `✅ ${badStreak} يوماً متتالياً بدون عادة سيئة (الهدف: 365 يوم)`;
   }
 
-  // إحصائيات متقدمة
   function getPerfectStreak() {
     let streak = 0;
     let today = new Date();
@@ -799,7 +740,6 @@
       div.className = "heatmap-day";
       if (completedPercent === 100) div.classList.add("completed");
       div.textContent = d.getDate();
-      div.title = `${dateStr}: ${Math.round(completedPercent)}%`;
       container.appendChild(div);
     }
   }
@@ -829,7 +769,7 @@
     const perfectDays = getPerfectDaysCount();
     if (perfectStreak >= 7) badges.push("🏅 سلسلة 7 أيام مثالية");
     if (perfectStreak >= 30) badges.push("🏆 سلسلة 30 يوماً مثالية");
-    if (perfectDays >= 10) badges.push("🎯 10 أيام مثالية إجمالاً");
+    if (perfectDays >= 10) badges.push("🎯 10 أيام مثالية");
     if (perfectDays >= 30) badges.push("🎖️ 30 يوماً مثالياً");
     const todayDate = new Date().toISOString().slice(0,10);
     const todayData = appData.habitsHistory[todayDate];
@@ -838,95 +778,6 @@
     badgesDiv.innerHTML = badges.map(b => `<div class="badge">${b}</div>`).join("");
   }
 
-  // رؤى ذكية
-  function generateInsights() {
-    const totalScore = calculateTotalScore();
-    const perfectStreak = getPerfectStreak();
-    const badStreak = getBadHabitStreak();
-    const perfectDays = getPerfectDaysCount();
-    const todayDate = new Date().toISOString().slice(0,10);
-    const todayMood = appData.moodLog[todayDate] || "غير مسجل";
-    let insight = `🌟 مجموع نقاطك: ${totalScore}. `;
-    if (perfectStreak > 0) insight += `🔥 لديك سلسلة أيام مثالية: ${perfectStreak} يوماً. `;
-    if (badStreak > 0) insight += `🚫 التزامك بلا عادة سيئة مستمر لـ ${badStreak} يوماً. `;
-    if (perfectDays >= 10) insight += `🏆 حققت ${perfectDays} يوماً مثالياً! `;
-    insight += `😊 مزاجك اليوم: ${todayMood}. `;
-    const quote = quotes[Math.floor(Math.random() * quotes.length)];
-    insight += `💡 نصيحة: ${quote}`;
-    document.getElementById("insightText").innerHTML = insight;
-  }
-
-  const quotes = [
-    "الاستمرارية أهم من الكمال.",
-    "ابدأ صغيراً وكن ثابتاً.",
-    "العادات تصنع المستقبل.",
-    "كل يوم هو فرصة جديدة.",
-    "لا تقارن نفسك بأحد، رحلتك خاصة بك."
-  ];
-
-  // المزاج والملاحظات
-  function updateMoodAndNote() {
-    const today = currentDate;
-    const savedMood = appData.moodLog[today] || "";
-    const savedNote = appData.notes[today] || "";
-    document.getElementById("dailyNote").value = savedNote;
-    document.querySelectorAll(".mood-btn").forEach(btn => {
-      if (btn.dataset.mood === savedMood) btn.classList.add("selected");
-      else btn.classList.remove("selected");
-    });
-  }
-
-  function saveMood(mood) {
-    appData.moodLog[currentDate] = mood;
-    saveData();
-    updateAllStats();
-  }
-
-  function saveNote() {
-    const note = document.getElementById("dailyNote").value;
-    appData.notes[currentDate] = note;
-    saveData();
-  }
-
-  // وضع التركيز
-  let focusInterval = null;
-  let focusSeconds = 0;
-  function populateFocusSelect() {
-    const select = document.getElementById("focusHabitSelect");
-    select.innerHTML = "";
-    HABITS.forEach(habit => {
-      const option = document.createElement("option");
-      option.value = habit.id;
-      option.textContent = habit.name;
-      select.appendChild(option);
-    });
-  }
-  function startFocus() {
-    if (focusInterval) {
-      clearInterval(focusInterval);
-      focusInterval = null;
-      document.getElementById("startFocusBtn").textContent = "ابدأ التركيز";
-      document.getElementById("focusTimer").textContent = "";
-      return;
-    }
-    const habitId = document.getElementById("focusHabitSelect").value;
-    const habit = HABITS.find(h => h.id === habitId);
-    if (!habit) return;
-    focusSeconds = 0;
-    focusInterval = setInterval(() => {
-      focusSeconds++;
-      const mins = Math.floor(focusSeconds / 60);
-      const secs = focusSeconds % 60;
-      document.getElementById("focusTimer").textContent = `⏱️ ${mins}:${secs < 10 ? '0'+secs : secs}`;
-    }, 1000);
-    document.getElementById("startFocusBtn").textContent = "إيقاف التركيز";
-    // إشعار
-    if (Notification.permission === "granted") {
-      new Notification(`بدأت التركيز على "${habit.name}"`);
-    }
-  }
-
-  // تحديث جميع العناصر
   function updateAllStats() {
     const { completed, total, percent } = getTodayCompletion();
     document.getElementById("todayCompleteCount").innerHTML = `${completed}/${total}`;
@@ -939,21 +790,14 @@
     updateWeeklyGoal();
     updateBadges();
     updatePrizes();
-    generateInsights();
-    updateMoodAndNote();
   }
 
   function updateDateDisplay() {
     const dateObj = new Date(currentDate + "T12:00:00");
-    const year = dateObj.getFullYear();
-    const month = dateObj.getMonth() + 1;
-    const day = dateObj.getDate();
-    const formatted = `${year}/${month}/${day}`;
+    const formatted = `${dateObj.getFullYear()}/${dateObj.getMonth()+1}/${dateObj.getDate()}`;
     document.getElementById("currentDateLabel").innerText = formatted;
     renderHabits();
     updateAllStats();
-    // تحديث المزاج والملاحظات للتاريخ الجديد
-    updateMoodAndNote();
   }
 
   function goPrevDay() {
@@ -974,7 +818,7 @@
   }
 
   function exportData() {
-    const data = { habits: HABITS, history: appData.habitsHistory, moodLog: appData.moodLog, notes: appData.notes };
+    const data = { habits: HABITS, history: appData.habitsHistory, purchasedItems: appData.purchasedItems };
     const blob = new Blob([JSON.stringify(data, null, 2)], {type: "application/json"});
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
@@ -990,8 +834,7 @@
         if (parsed.habits && parsed.history) {
           HABITS = parsed.habits;
           appData.habitsHistory = parsed.history;
-          appData.moodLog = parsed.moodLog || {};
-          appData.notes = parsed.notes || {};
+          appData.purchasedItems = parsed.purchasedItems || [];
           saveData();
           updateDateDisplay();
           alert("تم الاستيراد بنجاح!");
@@ -1006,10 +849,9 @@
   function resetAll() {
     if (confirm("سيتم حذف كل العادات والبيانات. متأكد؟")) {
       HABITS = initDefaultHabits();
-      appData = { habitsHistory: {}, moodLog: {}, notes: {} };
+      appData = { habitsHistory: {}, purchasedItems: [] };
       saveData();
       updateDateDisplay();
-      populateFocusSelect();
     }
   }
 
@@ -1029,25 +871,14 @@
     }
   }
 
-  // إشعارات
-  function requestNotificationPermission() {
-    if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
-      Notification.requestPermission();
-    }
-  }
-
-  // تحديث الاقتباس اليومي
+  const quotes = ["✨ العادة قوة خفية", "📚 كل يوم صفحة تقربك من حلمك", "💪 لا تؤجل عمل اليوم", "🌟 الاستمرارية أهم من الكمال"];
   function updateDailyQuote() {
-    const idx = new Date().getDate() % quotes.length;
-    document.getElementById("dailyQuote").innerHTML = `✨ "${quotes[idx]}"`;
+    document.getElementById("dailyQuote").innerHTML = `✨ "${quotes[new Date().getDate() % quotes.length]}"`;
   }
 
-  // ربط الأحداث
   document.addEventListener("DOMContentLoaded", () => {
     loadData();
     createParticles();
-    requestNotificationPermission();
-    populateFocusSelect();
     document.getElementById("prevDayBtn").addEventListener("click", goPrevDay);
     document.getElementById("nextDayBtn").addEventListener("click", goNextDay);
     document.getElementById("todayBtn").addEventListener("click", goToday);
@@ -1060,7 +891,6 @@
       else if (iconSelect === "read") iconSvg = ICONS.read_book;
       if (name.trim()) addHabit(name, iconSvg);
       document.getElementById("newHabitName").value = "";
-      populateFocusSelect();
     });
     document.getElementById("exportDataBtn").addEventListener("click", exportData);
     document.getElementById("resetAllDataBtn").addEventListener("click", resetAll);
@@ -1072,15 +902,6 @@
       if (e.target.files.length) importData(e.target.files[0]);
     });
     document.getElementById("weeklyGoalInput").addEventListener("change", updateWeeklyGoal);
-    document.getElementById("startFocusBtn").addEventListener("click", startFocus);
-    document.getElementById("dailyNote").addEventListener("blur", saveNote);
-    document.querySelectorAll(".mood-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const mood = btn.dataset.mood;
-        saveMood(mood);
-        updateAllStats();
-      });
-    });
     updateDailyQuote();
     updateDateDisplay();
   });
