@@ -130,8 +130,19 @@
       gap: 12px;
       flex: 1;
     }
-    .habit-emoji {
-      font-size: 1.7rem;
+    .habit-icon {
+      width: 32px;
+      height: 32px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .habit-icon svg {
+      width: 26px;
+      height: 26px;
+      fill: var(--accent);
+      stroke: none;
     }
     .habit-name {
       font-size: 1rem;
@@ -293,6 +304,14 @@
       color: white;
       cursor: pointer;
     }
+    .icon-select {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 60px;
+      padding: 8px 12px;
+      color: var(--text);
+      cursor: pointer;
+    }
 
     .export-import {
       display: flex;
@@ -357,7 +376,12 @@
     <div id="habitsContainer" class="habits-list"></div>
     <div class="add-habit">
       <input type="text" id="newHabitName" placeholder="عادة جديدة... (مثل: تمرين)">
-      <input type="text" id="newHabitEmoji" placeholder="رمز" maxlength="2" style="width:60px;">
+      <select id="newHabitIcon" class="icon-select">
+        <option value="star">⭐</option>
+        <option value="heart">❤️</option>
+        <option value="sport">🏃</option>
+        <option value="read">📖</option>
+      </select>
       <button id="addHabitBtn">➕ أضف</button>
     </div>
   </div>
@@ -371,7 +395,6 @@
       <div class="stat-block"><div class="stat-number" id="totalHabitsDone">0</div><div>📌 إنجازات كلية</div></div>
     </div>
 
-    <!-- قسم الأهداف الأسبوعية -->
     <div class="goal-section">
       <div style="font-weight:600;">🎯 الهدف الأسبوعي (إنجازات يومية)</div>
       <div class="goal-input">
@@ -383,7 +406,6 @@
       <div style="font-size:0.7rem; margin-top:4px;" id="weeklyProgressText"></div>
     </div>
 
-    <!-- شارات التحفيز -->
     <div id="badgesContainer" class="badges"></div>
 
     <div style="margin: 15px 0;">
@@ -407,23 +429,32 @@
 </div>
 
 <script>
-  // -------------------- الإعدادات الأساسية --------------------
-  let HABITS = []; // سيتم تحميلها من localStorage
+  // -------------------- أيقونات SVG --------------------
+  const ICONS = {
+    no_bad: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4" y1="4" x2="20" y2="20"/></svg>`,
+    pray: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`,
+    wash_face: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.5c-5 0-9 4-9 9s4 9 9 9 9-4 9-9-4-9-9-9zM12 7v6"/><path d="M9 10h6"/></svg>`,
+    read_book: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="12" y2="10"/></svg>`,
+    star: `<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15 8.5 22 9.5 17 14.5 18.5 21.5 12 17.5 5.5 21.5 7 14.5 2 9.5 9 8.5 12 2"/></svg>`,
+    heart: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`,
+    sport: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 12c0 4 2 8 6 8s6-4 6-8-2-8-6-8-6 4-6 8z"/><path d="M12 4v16M4 12h16"/></svg>`
+  };
+
+  // -------------------- العادات الافتراضية مع أيقونات SVG --------------------
+  let HABITS = [];
   let appData = { habitsHistory: {} };
   let currentDate = new Date().toISOString().slice(0,10);
-  const STORAGE_KEY = "advanced_habits_v3";
+  const STORAGE_KEY = "advanced_habits_v4";
 
-  // العادات الافتراضية (تم تعديلها)
   function initDefaultHabits() {
     return [
-      { id: "no_bad", name: "🚫 لا عادة سيئة", emoji: "🚫" },
-      { id: "pray", name: "🕌 صليت", emoji: "🕌" },
-      { id: "wash_face", name: "💧 غسلت وجهي", emoji: "💧" },
-      { id: "read_book", name: "📖 قرأت كتاب", emoji: "📖" }
+      { id: "no_bad", name: "لا عادة سيئة", icon: ICONS.no_bad },
+      { id: "pray", name: "صليت", icon: ICONS.pray },
+      { id: "wash_face", name: "غسلت وجهي", icon: ICONS.wash_face },
+      { id: "read_book", name: "قرأت كتاب", icon: ICONS.read_book }
     ];
   }
 
-  // تحميل البيانات
   function loadData() {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
@@ -436,7 +467,6 @@
       HABITS = initDefaultHabits();
       appData.habitsHistory = {};
     }
-    // تأكد من وجود كل عادة لكل يوم
     for (let date in appData.habitsHistory) {
       const day = appData.habitsHistory[date];
       HABITS.forEach(h => { if (day[h.id] === undefined) day[h.id] = false; });
@@ -451,7 +481,6 @@
     }));
   }
 
-  // الحصول على حالة اليوم
   function getDayStatus(date) {
     if (!appData.habitsHistory[date]) {
       const empty = {};
@@ -474,11 +503,10 @@
     if (navigator.vibrate) navigator.vibrate(50);
   }
 
-  // إضافة عادة جديدة
-  function addHabit(name, emoji) {
+  function addHabit(name, iconSvg) {
     if (!name.trim()) return;
     const id = "habit_" + Date.now() + "_" + Math.random().toString(36).substr(2, 6);
-    HABITS.push({ id, name: name.trim(), emoji: emoji || "⭐" });
+    HABITS.push({ id, name: name.trim(), icon: iconSvg || ICONS.star });
     for (let date in appData.habitsHistory) {
       if (appData.habitsHistory[date][id] === undefined) appData.habitsHistory[date][id] = false;
     }
@@ -499,7 +527,6 @@
     }
   }
 
-  // عرض قائمة العادات
   function renderHabits() {
     const container = document.getElementById("habitsContainer");
     const dayData = getDayStatus(currentDate);
@@ -510,7 +537,7 @@
       div.className = "habit-item";
       div.innerHTML = `
         <div class="habit-info">
-          <div class="habit-emoji">${habit.emoji}</div>
+          <div class="habit-icon">${habit.icon}</div>
           <div class="habit-name">${habit.name}</div>
         </div>
         <div class="habit-actions">
@@ -533,37 +560,7 @@
     });
   }
 
-  // إحصائيات متقدمة لكل عادة (لجدول التفصيلي)
-  function getHabitStats() {
-    let stats = {};
-    HABITS.forEach(h => { stats[h.id] = { total:0, currentStreak:0, bestStreak:0 }; });
-    const sortedDates = Object.keys(appData.habitsHistory).sort();
-    for (let h of HABITS) {
-      let total = 0, curStreak = 0, best = 0;
-      for (let date of sortedDates) {
-        if (appData.habitsHistory[date][h.id]) {
-          total++;
-          curStreak++;
-          if (curStreak > best) best = curStreak;
-        } else {
-          curStreak = 0;
-        }
-      }
-      // current streak from today backwards
-      let today = new Date();
-      let streak = 0;
-      for (let i = 0; i < 365; i++) {
-        let d = new Date(today);
-        d.setDate(today.getDate() - i);
-        let dateStr = d.toISOString().slice(0,10);
-        if (appData.habitsHistory[dateStr] && appData.habitsHistory[dateStr][h.id]) streak++;
-        else break;
-      }
-      stats[h.id] = { total, currentStreak: streak, bestStreak: best };
-    }
-    return stats;
-  }
-
+  // دوال الإحصائيات (مثل السابق)
   function getPerfectStreak() {
     let streak = 0;
     let today = new Date();
@@ -605,7 +602,6 @@
     return { completed, total: HABITS.length, percent };
   }
 
-  // الرسم البياني الأسبوعي
   function renderWeeklyChart() {
     const canvas = document.getElementById("weeklyChart");
     if (!canvas) return;
@@ -643,7 +639,6 @@
     });
   }
 
-  // تقويم حراري
   function renderHeatmap() {
     const container = document.getElementById("heatmapContainer");
     if (!container) return;
@@ -662,18 +657,16 @@
       const div = document.createElement("div");
       div.className = "heatmap-day";
       if (completedPercent === 100) div.classList.add("completed");
-      div.textContent = d.getDate(); // يوم بالرقم الغربي
+      div.textContent = d.getDate();
       div.title = `${dateStr}: ${Math.round(completedPercent)}%`;
       container.appendChild(div);
     }
   }
 
-  // الأهداف الأسبوعية
-  let weeklyGoal = 5; // الافتراضي
+  let weeklyGoal = 5;
   function updateWeeklyGoal() {
     const goal = parseInt(document.getElementById("weeklyGoalInput").value, 10);
     if (!isNaN(goal)) weeklyGoal = Math.min(7, Math.max(0, goal));
-    // حساب عدد الأيام المثالية في آخر 7 أيام
     const today = new Date();
     let perfectCount = 0;
     for (let i = 0; i < 7; i++) {
@@ -688,7 +681,6 @@
     document.getElementById("weeklyProgressText").innerText = `حققت ${perfectCount} من ${weeklyGoal} أيام مثالية هذا الأسبوع`;
   }
 
-  // شارات التحفيز
   function updateBadges() {
     const badgesDiv = document.getElementById("badgesContainer");
     const badges = [];
@@ -698,7 +690,6 @@
     if (perfectStreak >= 30) badges.push("🏆 سلسلة 30 يوماً مثالية");
     if (perfectDays >= 10) badges.push("🎯 10 أيام مثالية إجمالاً");
     if (perfectDays >= 30) badges.push("🎖️ 30 يوماً مثالياً");
-    // شارة التحديث اليومي
     const todayDate = new Date().toISOString().slice(0,10);
     const todayData = appData.habitsHistory[todayDate];
     if (todayData && HABITS.every(h => todayData[h.id] === true)) badges.push("⭐ يوم مثالي اليوم");
@@ -706,7 +697,6 @@
     badgesDiv.innerHTML = badges.map(b => `<div class="badge">${b}</div>`).join("");
   }
 
-  // مقولة تحفيزية يومية (ثابتة لكن يمكن تطويرها)
   const quotes = [
     "✨ العادة قوة خفية",
     "📚 كل يوم صفحة تقربك من حلمك",
@@ -738,7 +728,7 @@
     const year = dateObj.getFullYear();
     const month = dateObj.getMonth() + 1;
     const day = dateObj.getDate();
-    const formatted = `${year}/${month}/${day}`; // أرقام غربية
+    const formatted = `${year}/${month}/${day}`;
     document.getElementById("currentDateLabel").innerText = formatted;
     renderHabits();
     updateStatsAndVisuals();
@@ -761,7 +751,6 @@
     updateDateDisplay();
   }
 
-  // تصدير واستيراد وإعادة ضبط
   function exportData() {
     const data = { habits: HABITS, history: appData.habitsHistory };
     const blob = new Blob([JSON.stringify(data, null, 2)], {type: "application/json"});
@@ -799,7 +788,6 @@
     }
   }
 
-  // ربط الأحداث
   document.addEventListener("DOMContentLoaded", () => {
     loadData();
     document.getElementById("prevDayBtn").addEventListener("click", goPrevDay);
@@ -807,10 +795,13 @@
     document.getElementById("todayBtn").addEventListener("click", goToday);
     document.getElementById("addHabitBtn").addEventListener("click", () => {
       const name = document.getElementById("newHabitName").value;
-      const emoji = document.getElementById("newHabitEmoji").value || "📌";
-      if (name.trim()) addHabit(name, emoji);
+      const iconSelect = document.getElementById("newHabitIcon").value;
+      let iconSvg = ICONS.star;
+      if (iconSelect === "heart") iconSvg = ICONS.heart;
+      else if (iconSelect === "sport") iconSvg = ICONS.sport;
+      else if (iconSelect === "read") iconSvg = ICONS.read_book;
+      if (name.trim()) addHabit(name, iconSvg);
       document.getElementById("newHabitName").value = "";
-      document.getElementById("newHabitEmoji").value = "";
     });
     document.getElementById("exportDataBtn").addEventListener("click", exportData);
     document.getElementById("resetAllDataBtn").addEventListener("click", resetAll);
