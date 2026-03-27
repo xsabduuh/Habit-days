@@ -6,7 +6,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="يومياتي المتطورة">
-  <meta name="theme-color" content="#1e293b" id="theme-color-meta">
+  <meta name="theme-color" content="#0f172a">
   <title>يومياتي المتطورة | تتبع العادات الذكي</title>
   <style>
     * {
@@ -17,25 +17,16 @@
     }
 
     :root {
-      --bg: #f1f5f9;
-      --card: rgba(255,255,255,0.96);
-      --text: #0f172a;
-      --text-muted: #475569;
-      --border: #e2e8f0;
-      --accent: #10b981;
-      --accent-dark: #059669;
-      --danger: #ef4444;
-      --shadow: 0 8px 20px rgba(0,0,0,0.05);
-      --transition: all 0.2s ease;
-    }
-
-    body.dark {
       --bg: #0f172a;
       --card: #1e293b;
       --text: #f1f5f9;
       --text-muted: #94a3b8;
       --border: #334155;
+      --accent: #10b981;
+      --accent-dark: #059669;
+      --danger: #ef4444;
       --shadow: 0 8px 20px rgba(0,0,0,0.3);
+      --transition: all 0.2s ease;
     }
 
     body {
@@ -65,13 +56,6 @@
       transition: var(--transition);
     }
 
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
     .header h1 {
       font-size: 1.8rem;
       font-weight: 800;
@@ -79,22 +63,18 @@
       background-clip: text;
       -webkit-background-clip: text;
       color: transparent;
+      margin-bottom: 0.25rem;
     }
-    .dark-mode-toggle {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 40px;
-      padding: 8px 16px;
-      font-size: 0.8rem;
-      cursor: pointer;
-      color: var(--text);
+    .header p {
+      font-size: 0.7rem;
+      color: var(--text-muted);
     }
 
     .date-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: rgba(0,0,0,0.05);
+      background: rgba(0,0,0,0.2);
       border-radius: 60px;
       padding: 0.4rem 0.5rem;
       margin-bottom: 0.5rem;
@@ -117,6 +97,8 @@
       padding: 0.3rem 1rem;
       border-radius: 40px;
       color: var(--text);
+      font-family: monospace;
+      direction: ltr;
     }
     .today-btn {
       background: var(--accent);
@@ -208,6 +190,57 @@
       font-size: 1.8rem;
       font-weight: 800;
       color: var(--accent);
+      direction: ltr;
+    }
+
+    .goal-section {
+      background: var(--bg);
+      border-radius: 24px;
+      padding: 12px;
+      margin-bottom: 20px;
+    }
+    .goal-input {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-top: 8px;
+    }
+    .goal-input input {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 40px;
+      padding: 6px 12px;
+      color: var(--text);
+      width: 80px;
+      text-align: center;
+    }
+    .progress-bar {
+      background: var(--border);
+      border-radius: 20px;
+      height: 8px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      background: var(--accent);
+      width: 0%;
+      height: 100%;
+      transition: width 0.3s;
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0;
+    }
+    .badge {
+      background: var(--accent-dark);
+      color: white;
+      border-radius: 40px;
+      padding: 4px 12px;
+      font-size: 0.7rem;
+      font-weight: 600;
     }
 
     .heatmap {
@@ -277,6 +310,15 @@
       color: var(--text);
     }
 
+    .quote {
+      text-align: center;
+      font-style: italic;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
     footer {
       font-size: 0.65rem;
       text-align: center;
@@ -294,9 +336,8 @@
   <div class="card">
     <div class="header">
       <h1>📆 يومياتي المتطورة</h1>
-      <button class="dark-mode-toggle" id="darkModeToggle">🌙 ليلي</button>
+      <p>تتبع عاداتك + أهداف أسبوعية + شارات تحفيزية</p>
     </div>
-    <p style="font-size:0.75rem; margin-top:4px;">تتبع عاداتك + تحليلات ذكية + تقويم حراري</p>
   </div>
 
   <div class="card" style="padding:0.8rem 1rem;">
@@ -315,7 +356,7 @@
     </div>
     <div id="habitsContainer" class="habits-list"></div>
     <div class="add-habit">
-      <input type="text" id="newHabitName" placeholder="عادة جديدة... (مثل: قراءة)">
+      <input type="text" id="newHabitName" placeholder="عادة جديدة... (مثل: تمرين)">
       <input type="text" id="newHabitEmoji" placeholder="رمز" maxlength="2" style="width:60px;">
       <button id="addHabitBtn">➕ أضف</button>
     </div>
@@ -329,6 +370,21 @@
       <div class="stat-block"><div class="stat-number" id="totalPerfectDays">0</div><div>🏆 أيام مثالية</div></div>
       <div class="stat-block"><div class="stat-number" id="totalHabitsDone">0</div><div>📌 إنجازات كلية</div></div>
     </div>
+
+    <!-- قسم الأهداف الأسبوعية -->
+    <div class="goal-section">
+      <div style="font-weight:600;">🎯 الهدف الأسبوعي (إنجازات يومية)</div>
+      <div class="goal-input">
+        <span>أريد إنجاز</span>
+        <input type="number" id="weeklyGoalInput" min="0" max="7" step="1" value="5">
+        <span>أيام في الأسبوع</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="weeklyProgressFill"></div></div>
+      <div style="font-size:0.7rem; margin-top:4px;" id="weeklyProgressText"></div>
+    </div>
+
+    <!-- شارات التحفيز -->
+    <div id="badgesContainer" class="badges"></div>
 
     <div style="margin: 15px 0;">
       <div style="font-weight:600; margin-bottom:8px;">📅 تقويم الأداء (آخر 30 يوم)</div>
@@ -345,25 +401,25 @@
       <button id="importDataBtn" class="small-btn">📥 استيراد</button>
       <button id="resetAllDataBtn" class="small-btn" style="color:var(--danger);">🗑️ إعادة ضبط</button>
     </div>
+    <div class="quote" id="dailyQuote">✨ "العادة قوة خفية"</div>
   </div>
   <footer>✨ إضغط مطولاً على العادة لحذفها | اهتزاز عند الإنجاز</footer>
 </div>
 
 <script>
   // -------------------- الإعدادات الأساسية --------------------
-  let HABITS = []; // سيتم تحميلها من localStorage أو البدء بالعادات الافتراضية
-  let appData = { habitsHistory: {} }; // { "2025-03-27": { habitId: true/false, ... } }
+  let HABITS = []; // سيتم تحميلها من localStorage
+  let appData = { habitsHistory: {} };
   let currentDate = new Date().toISOString().slice(0,10);
-  
-  const STORAGE_KEY = "advanced_habits_v2";
+  const STORAGE_KEY = "advanced_habits_v3";
 
-  // تهيئة العادات الافتراضية
+  // العادات الافتراضية (تم تعديلها)
   function initDefaultHabits() {
     return [
       { id: "no_bad", name: "🚫 لا عادة سيئة", emoji: "🚫" },
       { id: "pray", name: "🕌 صليت", emoji: "🕌" },
       { id: "wash_face", name: "💧 غسلت وجهي", emoji: "💧" },
-      { id: "productive", name: "🌟 عملت شيئاً مفيداً", emoji: "🌟" }
+      { id: "read_book", name: "📖 قرأت كتاب", emoji: "📖" }
     ];
   }
 
@@ -380,7 +436,7 @@
       HABITS = initDefaultHabits();
       appData.habitsHistory = {};
     }
-    // التأكد من أن كل يوم له سجل لجميع العادات
+    // تأكد من وجود كل عادة لكل يوم
     for (let date in appData.habitsHistory) {
       const day = appData.habitsHistory[date];
       HABITS.forEach(h => { if (day[h.id] === undefined) day[h.id] = false; });
@@ -415,7 +471,6 @@
     } else {
       updateStatsAndVisuals();
     }
-    // اهتزاز خفيف
     if (navigator.vibrate) navigator.vibrate(50);
   }
 
@@ -424,7 +479,6 @@
     if (!name.trim()) return;
     const id = "habit_" + Date.now() + "_" + Math.random().toString(36).substr(2, 6);
     HABITS.push({ id, name: name.trim(), emoji: emoji || "⭐" });
-    // إضافة العادة لجميع الأيام الموجودة (لضمان التوافق)
     for (let date in appData.habitsHistory) {
       if (appData.habitsHistory[date][id] === undefined) appData.habitsHistory[date][id] = false;
     }
@@ -436,7 +490,6 @@
   function deleteHabit(habitId) {
     if (confirm("هل تريد حذف هذه العادة؟ سيتم فقدان بياناتها السابقة.")) {
       HABITS = HABITS.filter(h => h.id !== habitId);
-      // حذف المفاتيح من كل يوم
       for (let date in appData.habitsHistory) {
         delete appData.habitsHistory[date][habitId];
       }
@@ -480,7 +533,7 @@
     });
   }
 
-  // إحصائيات متقدمة
+  // إحصائيات متقدمة لكل عادة (لجدول التفصيلي)
   function getHabitStats() {
     let stats = {};
     HABITS.forEach(h => { stats[h.id] = { total:0, currentStreak:0, bestStreak:0 }; });
@@ -496,7 +549,7 @@
           curStreak = 0;
         }
       }
-      // current streak من اليوم للخلف
+      // current streak from today backwards
       let today = new Date();
       let streak = 0;
       for (let i = 0; i < 365; i++) {
@@ -552,7 +605,7 @@
     return { completed, total: HABITS.length, percent };
   }
 
-  // رسم بياني أسبوعي
+  // الرسم البياني الأسبوعي
   function renderWeeklyChart() {
     const canvas = document.getElementById("weeklyChart");
     if (!canvas) return;
@@ -609,26 +662,83 @@
       const div = document.createElement("div");
       div.className = "heatmap-day";
       if (completedPercent === 100) div.classList.add("completed");
-      div.textContent = d.getDate();
+      div.textContent = d.getDate(); // يوم بالرقم الغربي
       div.title = `${dateStr}: ${Math.round(completedPercent)}%`;
       container.appendChild(div);
     }
   }
 
+  // الأهداف الأسبوعية
+  let weeklyGoal = 5; // الافتراضي
+  function updateWeeklyGoal() {
+    const goal = parseInt(document.getElementById("weeklyGoalInput").value, 10);
+    if (!isNaN(goal)) weeklyGoal = Math.min(7, Math.max(0, goal));
+    // حساب عدد الأيام المثالية في آخر 7 أيام
+    const today = new Date();
+    let perfectCount = 0;
+    for (let i = 0; i < 7; i++) {
+      let d = new Date(today);
+      d.setDate(today.getDate() - i);
+      const dateStr = d.toISOString().slice(0,10);
+      const day = appData.habitsHistory[dateStr];
+      if (day && HABITS.every(h => day[h.id] === true)) perfectCount++;
+    }
+    const progress = Math.min(100, (perfectCount / weeklyGoal) * 100);
+    document.getElementById("weeklyProgressFill").style.width = progress + "%";
+    document.getElementById("weeklyProgressText").innerText = `حققت ${perfectCount} من ${weeklyGoal} أيام مثالية هذا الأسبوع`;
+  }
+
+  // شارات التحفيز
+  function updateBadges() {
+    const badgesDiv = document.getElementById("badgesContainer");
+    const badges = [];
+    const perfectStreak = getPerfectStreak();
+    const perfectDays = getPerfectDaysCount();
+    if (perfectStreak >= 7) badges.push("🏅 سلسلة 7 أيام مثالية");
+    if (perfectStreak >= 30) badges.push("🏆 سلسلة 30 يوماً مثالية");
+    if (perfectDays >= 10) badges.push("🎯 10 أيام مثالية إجمالاً");
+    if (perfectDays >= 30) badges.push("🎖️ 30 يوماً مثالياً");
+    // شارة التحديث اليومي
+    const todayDate = new Date().toISOString().slice(0,10);
+    const todayData = appData.habitsHistory[todayDate];
+    if (todayData && HABITS.every(h => todayData[h.id] === true)) badges.push("⭐ يوم مثالي اليوم");
+    if (badges.length === 0) badges.push("ابدأ رحلتك لتحصل على شارات!");
+    badgesDiv.innerHTML = badges.map(b => `<div class="badge">${b}</div>`).join("");
+  }
+
+  // مقولة تحفيزية يومية (ثابتة لكن يمكن تطويرها)
+  const quotes = [
+    "✨ العادة قوة خفية",
+    "📚 كل يوم صفحة تقربك من حلمك",
+    "💪 لا تؤجل عمل اليوم إلى الغد",
+    "🌟 الاستمرارية أهم من الكمال",
+    "🕌 الصلاة تريح القلب",
+    "📖 كتاب واحد كل أسبوع يغير حياتك"
+  ];
+  function updateDailyQuote() {
+    const dayIndex = new Date().getDate() % quotes.length;
+    document.getElementById("dailyQuote").innerHTML = `✨ "${quotes[dayIndex]}"`;
+  }
+
   function updateStatsAndVisuals() {
     const { completed, total, percent } = getTodayCompletion();
-    document.getElementById("todayCompleteCount").innerText = `${completed}/${total}`;
-    document.getElementById("completionBadge").innerText = `${percent}%`;
-    document.getElementById("streakDays").innerText = getPerfectStreak();
-    document.getElementById("totalPerfectDays").innerText = getPerfectDaysCount();
-    document.getElementById("totalHabitsDone").innerText = getTotalCompletions();
+    document.getElementById("todayCompleteCount").innerHTML = `${completed}/${total}`;
+    document.getElementById("completionBadge").innerHTML = `${percent}%`;
+    document.getElementById("streakDays").innerHTML = getPerfectStreak();
+    document.getElementById("totalPerfectDays").innerHTML = getPerfectDaysCount();
+    document.getElementById("totalHabitsDone").innerHTML = getTotalCompletions();
     renderWeeklyChart();
     renderHeatmap();
+    updateWeeklyGoal();
+    updateBadges();
   }
 
   function updateDateDisplay() {
     const dateObj = new Date(currentDate + "T12:00:00");
-    const formatted = dateObj.toLocaleDateString('ar-EG', { year:'numeric', month:'long', day:'numeric' });
+    const year = dateObj.getFullYear();
+    const month = dateObj.getMonth() + 1;
+    const day = dateObj.getDate();
+    const formatted = `${year}/${month}/${day}`; // أرقام غربية
     document.getElementById("currentDateLabel").innerText = formatted;
     renderHabits();
     updateStatsAndVisuals();
@@ -651,7 +761,7 @@
     updateDateDisplay();
   }
 
-  // تصدير
+  // تصدير واستيراد وإعادة ضبط
   function exportData() {
     const data = { habits: HABITS, history: appData.habitsHistory };
     const blob = new Blob([JSON.stringify(data, null, 2)], {type: "application/json"});
@@ -689,20 +799,9 @@
     }
   }
 
-  // Dark mode
-  function initDarkMode() {
-    const dark = localStorage.getItem("darkMode") === "true";
-    if (dark) document.body.classList.add("dark");
-    document.getElementById("darkModeToggle").addEventListener("click", () => {
-      document.body.classList.toggle("dark");
-      localStorage.setItem("darkMode", document.body.classList.contains("dark"));
-    });
-  }
-
-  // أحداث
+  // ربط الأحداث
   document.addEventListener("DOMContentLoaded", () => {
     loadData();
-    initDarkMode();
     document.getElementById("prevDayBtn").addEventListener("click", goPrevDay);
     document.getElementById("nextDayBtn").addEventListener("click", goNextDay);
     document.getElementById("todayBtn").addEventListener("click", goToday);
@@ -718,12 +817,12 @@
     const importInput = document.createElement("input");
     importInput.type = "file";
     importInput.accept = "application/json";
-    document.getElementById("importDataBtn").addEventListener("click", () => {
-      importInput.click();
-    });
+    document.getElementById("importDataBtn").addEventListener("click", () => importInput.click());
     importInput.addEventListener("change", (e) => {
       if (e.target.files.length) importData(e.target.files[0]);
     });
+    document.getElementById("weeklyGoalInput").addEventListener("change", updateWeeklyGoal);
+    updateDailyQuote();
     updateDateDisplay();
   });
 </script>
