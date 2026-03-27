@@ -16,22 +16,23 @@
     }
 
     body {
-      font-family: 'Segoe UI', 'Tajawal', system-ui, -apple-system, sans-serif;
+      font-family: 'Segoe UI', 'Tajawal', system-ui, sans-serif;
       background: radial-gradient(circle at 20% 30%, #0a0f1a, #020617);
       color: #e2e8f0;
       padding: 1rem;
       position: relative;
       min-height: 100vh;
+      transition: background 0.5s;
     }
 
-    /* Fog effect (الضباب الأسود / وحش الإدمان) */
+    /* Fog effect */
     .fog-overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: radial-gradient(circle, rgba(0,0,0,0) 30%, rgba(0,0,0,0.6) 90%);
+      background: radial-gradient(circle, rgba(0,0,0,0) 30%, rgba(0,0,0,0.7) 90%);
       pointer-events: none;
       z-index: 100;
       transition: opacity 0.5s ease;
@@ -45,7 +46,6 @@
       z-index: 2;
     }
 
-    /* تنسيقات البطاقات */
     .card {
       background: rgba(15, 25, 45, 0.75);
       backdrop-filter: blur(12px);
@@ -113,7 +113,6 @@
       display: block;
     }
 
-    /* إحصائيات */
     .stats-dashboard {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(130px,1fr));
@@ -136,7 +135,6 @@
       direction: ltr;
     }
 
-    /* المتجر */
     .shop-section {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(150px,1fr));
@@ -167,7 +165,6 @@
       margin-top: 6px;
     }
 
-    /* التقويم */
     .calendar-grid {
       display: grid;
       grid-template-columns: repeat(7,1fr);
@@ -186,7 +183,6 @@
     .cal-day.fail { background: #ef4444; color: white; }
     .cal-day.missed { background: #475569; color: #cbd5e1; }
 
-    /* إنجازات */
     .achievements-list {
       display: flex;
       flex-wrap: wrap;
@@ -226,8 +222,6 @@
       justify-content: center;
       margin-top: 10px;
     }
-
-    /* مدينة المراحل */
     .city-level-badge {
       background: #0f172a;
       border-radius: 2rem;
@@ -237,7 +231,7 @@
       font-weight: bold;
     }
 
-    /* تغير لون الخلفية حسب تطور المدينة */
+    /* مراحل المدينة تغير لون الخلفية */
     body.city-level-1 { background: radial-gradient(circle at 20% 30%, #0a0f1a, #020617); }
     body.city-level-2 { background: radial-gradient(circle at 20% 30%, #14532d, #0a2f1a); }
     body.city-level-3 { background: radial-gradient(circle at 20% 30%, #1e3a2f, #0c4a2e); }
@@ -260,11 +254,10 @@
 <body>
 <div class="fog-overlay" id="fogOverlay"></div>
 <div class="container">
-  <!-- رأس الصفحة -->
   <div class="card">
     <div class="header">
-      <h1>🏙️ مدينة الإرادة | SimCity لمحاربة العادة</h1>
-      <div><span id="pointsDisplay">0</span> <span class="gold-text">نقطة</span></div>
+      <h1>🏙️ مدينة الإرادة | SimCity لمحاربة العادة السيئة</h1>
+      <div><span id="pointsDisplay">0</span> <span style="color:#facc15;">نقطة</span></div>
     </div>
     <div class="flex-btns">
       <button class="btn" id="successBtn">✅ نجحت اليوم (لا عادة سيئة) +10</button>
@@ -273,38 +266,31 @@
     <div class="city-level-badge" id="cityLevelBadge">أرض فارغة</div>
   </div>
 
-  <!-- مدينة (الشبكة) -->
   <div class="card">
-    <h3>🗺️ مدينتك</h3>
+    <h3>🗺️ مدينتك (اضغط مطولاً لبيع المبنى)</h3>
     <div id="cityGrid" class="city-grid"></div>
-    <div style="font-size:0.7rem; margin-top:8px;">🔍 مرر على المبنى لترى اسمه</div>
   </div>
 
-  <!-- لوحة الإحصائيات -->
   <div class="card">
     <h3>📊 لوحة الإحصائيات</h3>
-    <div class="stats-dashboard" id="statsDashboard"></div>
+    <div id="statsDashboard" class="stats-dashboard"></div>
   </div>
 
-  <!-- المتجر (مباني + ديكور + معززات) -->
   <div class="card">
     <h3>🛒 متجر المدينة</h3>
     <div id="shopContainer" class="shop-section"></div>
   </div>
 
-  <!-- الإنجازات -->
   <div class="card">
     <h3>🏆 الإنجازات</h3>
     <div id="achievementsList" class="achievements-list"></div>
   </div>
 
-  <!-- سجل الأيام (تقويم) -->
   <div class="card">
     <h3>📅 سجل آخر 30 يوم</h3>
     <div id="calendar" class="calendar-grid"></div>
   </div>
 
-  <!-- أزرار إضافية -->
   <div class="card">
     <div style="display: flex; gap:10px; justify-content: flex-end;">
       <button id="resetGameBtn" class="btn btn-danger">🗑️ إعادة ضبط اللعبة</button>
@@ -312,12 +298,12 @@
       <button id="importBtn" class="btn">📥 استيراد</button>
     </div>
   </div>
-  <footer>✨ كل نجاح يبني مدينتك | الضباب الأسود يتراجع مع انتصاراتك | 365 يوم = أسطورة</footer>
+  <footer>✨ كل نجاح يبني مدينتك | الضباب الأسود يتراجع مع انتصاراتك | الهدف: 365 يوماً بدون عادة سيئة</footer>
 </div>
 
 <script>
   // ======================== بيانات اللعبة ========================
-  const STORAGE_KEY = "simcity_habit_v2";
+  const STORAGE_KEY = "simcity_habit_final";
 
   // المباني والديكورات والمعززات
   const BUILDINGS = [
@@ -350,17 +336,13 @@
 
   const ALL_ITEMS = [...BUILDINGS, ...DECORATIONS, ...BOOSTERS];
 
-  // حالة اللعبة
   let state = {
     points: 0,
-    streak: 0,          // الأيام المتتالية الناجحة
+    streak: 0,
     maxStreak: 0,
-    history: {},        // { "2025-03-27": "success" / "fail" / "missed" }
-    purchasedBuildings: [],  // قائمة بأسماء المباني المشتراة (مكررة) – كل عنصر { id, name, emoji, type }
-    cityGrid: [],       // مصفوفة 6x6 (36 خلية) تحتوي على كائنات المباني الموضوعة
+    history: {},        // { "2025-03-27": "success"/"fail" }
+    cityGrid: Array(36).fill(null),
     boostersActive: { double: false, shield: false, weeklyBonusAdded: false },
-    dailyBonusMultiplier: 1,
-    lastSuccessDate: null,
     totalSuccesses: 0,
     totalFails: 0,
     totalPointsEarned: 0,
@@ -380,89 +362,40 @@
     { id: "100days", name: "100 يوم", condition: (s) => s.maxStreak >= 100, reward: 2000 }
   ];
 
-  // ========== دوال مساعدة ==========
-  function getTodayStr() {
-    return new Date().toISOString().slice(0,10);
-  }
-
-  function initGrid() {
-    if (state.cityGrid.length === 0) {
-      state.cityGrid = Array(36).fill(null);
-    }
-  }
-
-  // إضافة مبنى إلى أول خلية فارغة
-  function addBuildingToCity(buildingObj) {
-    const emptyIndex = state.cityGrid.findIndex(cell => cell === null);
-    if (emptyIndex === -1) {
-      alert("مدينتك ممتلئة! لا يمكنك إضافة المزيد.");
-      return false;
-    }
-    state.cityGrid[emptyIndex] = buildingObj;
-    return true;
-  }
-
-  // إزالة مبنى (بيع) – بسيط
-  function removeBuildingFromCity(index) {
-    if (index >= 0 && index < state.cityGrid.length && state.cityGrid[index] !== null) {
-      const item = state.cityGrid[index];
-      state.cityGrid[index] = null;
-      return item;
-    }
-    return null;
-  }
+  function getTodayStr() { return new Date().toISOString().slice(0,10); }
 
   // شراء عنصر
   function purchaseItem(itemId) {
     const item = ALL_ITEMS.find(i => i.id === itemId);
     if (!item) return false;
-    if (state.points < item.cost) {
-      alert("نقاط غير كافية!");
-      return false;
-    }
-    // معالجة حسب النوع
+    if (state.points < item.cost) { alert("نقاط غير كافية!"); return false; }
     if (item.type === "building" || item.type === "decoration") {
       const newItem = { id: item.id, name: item.name, emoji: item.emoji, type: item.type, cost: item.cost };
-      if (addBuildingToCity(newItem)) {
-        state.points -= item.cost;
-        state.totalPointsSpent += item.cost;
-        state.purchasedBuildings.push(newItem);
-        saveGame();
-        renderCity();
-        updateAllUI();
-        return true;
-      }
+      const emptyIndex = state.cityGrid.findIndex(cell => cell === null);
+      if (emptyIndex === -1) { alert("مدينتك ممتلئة! لا يمكنك إضافة المزيد."); return false; }
+      state.cityGrid[emptyIndex] = newItem;
+      state.points -= item.cost;
+      state.totalPointsSpent += item.cost;
+      saveGame();
+      renderCity();
+      updateAllUI();
+      return true;
     } else if (item.type === "booster") {
-      // معززات لمرة واحدة
       if (item.id === "double") {
         if (state.boostersActive.double) { alert("لديك مضاعف نشط بالفعل!"); return false; }
         state.boostersActive.double = true;
-        state.points -= item.cost;
-        state.totalPointsSpent += item.cost;
-        alert("تم تفعيل مضاعف النقاط ليوم غد!");
       } else if (item.id === "shield") {
         if (state.boostersActive.shield) { alert("لديك درع بالفعل!"); return false; }
         state.boostersActive.shield = true;
-        state.points -= item.cost;
-        state.totalPointsSpent += item.cost;
-        alert("الدرع مفعل! سيمنع خسارة الـ streak مرة واحدة.");
       } else if (item.id === "forgiveness") {
-        // يوم سماح: يسجل اليوم نجاحاً تلقائياً
         const today = getTodayStr();
-        if (state.history[today]) {
-          alert("اليوم مسجل بالفعل!");
-          return false;
-        }
+        if (state.history[today]) { alert("اليوم مسجل بالفعل!"); return false; }
         state.history[today] = "success";
         state.totalSuccesses++;
         state.streak++;
         if (state.streak > state.maxStreak) state.maxStreak = state.streak;
-        // نقاط السماح: 10 نقاط + مضاعف إن وجد
         let earned = 10;
-        if (state.boostersActive.double) {
-          earned *= 2;
-          state.boostersActive.double = false;
-        }
+        if (state.boostersActive.double) { earned *= 2; state.boostersActive.double = false; }
         state.points += earned;
         state.totalPointsEarned += earned;
         state.points -= item.cost;
@@ -474,10 +407,9 @@
       } else if (item.id === "weeklyBonus") {
         if (state.boostersActive.weeklyBonusAdded) { alert("تم شراء هذه الميزة مسبقاً"); return false; }
         state.boostersActive.weeklyBonusAdded = true;
-        state.points -= item.cost;
-        state.totalPointsSpent += item.cost;
-        alert("تم زيادة مكافأة الأسبوع! ستحصل على +20 إضافية عند تحقيق streak أسبوعي.");
       }
+      state.points -= item.cost;
+      state.totalPointsSpent += item.cost;
       saveGame();
       updateAllUI();
       return true;
@@ -488,22 +420,16 @@
   // نجاح اليوم
   function handleSuccess() {
     const today = getTodayStr();
-    if (state.history[today]) {
-      alert("لقد سجلت اليوم بالفعل!");
-      return;
-    }
+    if (state.history[today]) { alert("لقد سجلت اليوم بالفعل!"); return; }
     let pointsEarned = 10;
-    if (state.boostersActive.double) {
-      pointsEarned *= 2;
-      state.boostersActive.double = false;
-    }
+    if (state.boostersActive.double) { pointsEarned *= 2; state.boostersActive.double = false; }
     state.points += pointsEarned;
     state.totalPointsEarned += pointsEarned;
     state.totalSuccesses++;
     state.streak++;
     if (state.streak > state.maxStreak) state.maxStreak = state.streak;
 
-    // مكافآت الـ streak (كل أسبوع، 14، 30، إلخ)
+    // مكافآت السلسلة
     let bonus = 0;
     if (state.streak === 7) bonus = 50;
     else if (state.streak === 14) bonus = 120;
@@ -515,7 +441,6 @@
       state.totalPointsEarned += bonus;
       alert(`🎉 مكافأة سلسلة ${state.streak} يوم: +${bonus} نقطة!`);
     }
-    // مكافأة أسبوعية معززة
     if (state.boostersActive.weeklyBonusAdded && state.streak % 7 === 0 && state.streak !== 0) {
       state.points += 20;
       state.totalPointsEarned += 20;
@@ -526,21 +451,16 @@
     saveGame();
     checkAchievements();
     updateAllUI();
-    applyFogAndCityLevel();
   }
 
   // فشل اليوم
   function handleFail() {
     const today = getTodayStr();
-    if (state.history[today]) {
-      alert("اليوم مسجل بالفعل!");
-      return;
-    }
+    if (state.history[today]) { alert("اليوم مسجل بالفعل!"); return; }
     let penalty = 30;
     state.points = Math.max(0, state.points - penalty);
     state.totalPointsEarned = Math.max(0, state.totalPointsEarned - penalty);
     state.totalFails++;
-    // درع الحماية
     if (state.boostersActive.shield) {
       state.boostersActive.shield = false;
       alert("🛡️ تم تفعيل الدرع! لم تخسر الـ streak.");
@@ -551,10 +471,9 @@
     saveGame();
     checkAchievements();
     updateAllUI();
-    applyFogAndCityLevel();
   }
 
-  // حساب إجمالي قيمة المباني المشتراة
+  // إجمالي قيمة المباني
   function getTotalBuildingValue() {
     let total = 0;
     for (let cell of state.cityGrid) {
@@ -566,7 +485,7 @@
     return total;
   }
 
-  // تحديث مرحلة المدينة بناءً على قيمة المباني
+  // تحديث مرحلة المدينة
   function updateCityLevel() {
     const value = getTotalBuildingValue();
     let level = 1;
@@ -581,14 +500,13 @@
     return level;
   }
 
-  // تأثير الضباب: كلما قلت الـ streak زاد الضباب
-  function applyFogAndCityLevel() {
+  // تأثير الضباب
+  function applyFog() {
     const fog = document.getElementById("fogOverlay");
     let opacity = Math.max(0, 0.4 - (state.streak / 100));
     if (state.streak < 3) opacity = 0.6;
     if (state.streak === 0) opacity = 0.75;
     fog.style.opacity = opacity;
-    updateCityLevel();
   }
 
   // عرض المدينة
@@ -601,7 +519,6 @@
       tile.className = "city-tile";
       if (cell) {
         tile.innerHTML = `${cell.emoji}<span class="building-tooltip">${cell.name}</span>`;
-        // إضافة خاصية بيع عند الضغط الطويل (اختياري)
         tile.oncontextmenu = (e) => {
           e.preventDefault();
           if (confirm(`بيع ${cell.name} مقابل ${Math.floor(cell.cost/2)} نقطة؟`)) {
@@ -715,7 +632,8 @@
     renderCalendar();
     renderShop();
     renderAchievements();
-    applyFogAndCityLevel();
+    updateCityLevel();
+    applyFog();
   }
 
   // حفظ اللعبة
@@ -725,7 +643,6 @@
       streak: state.streak,
       maxStreak: state.maxStreak,
       history: state.history,
-      purchasedBuildings: state.purchasedBuildings,
       cityGrid: state.cityGrid,
       boostersActive: state.boostersActive,
       totalSuccesses: state.totalSuccesses,
@@ -744,17 +661,13 @@
       try {
         const data = JSON.parse(saved);
         state = { ...state, ...data };
-        // ضمان وجود cityGrid
-        if (!state.cityGrid || state.cityGrid.length !== 36) initGrid();
+        if (!state.cityGrid || state.cityGrid.length !== 36) state.cityGrid = Array(36).fill(null);
         if (!state.boostersActive) state.boostersActive = { double: false, shield: false, weeklyBonusAdded: false };
         if (!state.totalPointsEarned) state.totalPointsEarned = state.points;
         if (!state.totalPointsSpent) state.totalPointsSpent = 0;
         if (!state.achievementsUnlocked) state.achievementsUnlocked = [];
       } catch(e) {}
-    } else {
-      initGrid();
     }
-    // التأكد من عدم وجود أيام مفقودة في الـ history (لن يتم ملء تلقائياً)
     updateAllUI();
   }
 
@@ -766,10 +679,10 @@
     }
   }
 
-  // تصدير واستيراد
+  // تصدير
   function exportGame() {
-    const dataStr = JSON.stringify(localStorage.getItem(STORAGE_KEY));
-    const blob = new Blob([dataStr], {type: "application/json"});
+    const data = localStorage.getItem(STORAGE_KEY);
+    const blob = new Blob([data || "{}"], {type: "application/json"});
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -778,12 +691,13 @@
     URL.revokeObjectURL(url);
   }
 
+  // استيراد
   function importGame(file) {
     const reader = new FileReader();
     reader.onload = e => {
       try {
         const imported = JSON.parse(e.target.result);
-        localStorage.setItem(STORAGE_KEY, imported);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(imported));
         location.reload();
       } catch(err) { alert("ملف غير صالح"); }
     };
@@ -805,12 +719,6 @@
 
   // بدء اللعبة
   loadGame();
-  updateAllUI();
-  // فحص يوم جديد (إذا لم يسجل اليوم)
-  const today = getTodayStr();
-  if (!state.history[today]) {
-    // لا شيء، المستخدم يختار
-  }
 </script>
 </body>
 </html>
