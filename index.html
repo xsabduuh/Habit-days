@@ -14,9 +14,9 @@
       padding: 0;
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
+      user-select: none; /* منع الضغط المطول للنسخ */
     }
 
-    /* ========== خلفية متحركة رائعة ========== */
     body {
       font-family: system-ui, 'Segoe UI', 'Tajawal', -apple-system, BlinkMacSystemFont, sans-serif;
       min-height: 100vh;
@@ -28,21 +28,7 @@
       overflow-x: hidden;
     }
 
-    /* خلفية متحركة (موجات) */
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: 
-        radial-gradient(circle at 20% 30%, rgba(56, 189, 248, 0.08) 0%, transparent 50%),
-        radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.08) 0%, transparent 50%);
-      z-index: -2;
-    }
-
-    /* جزيئات متحركة */
+    /* خلفية متحركة (جزيئات) */
     .particles {
       position: fixed;
       top: 0;
@@ -73,7 +59,7 @@
       z-index: 2;
     }
 
-    /* ========== بطاقات زجاجية متطورة ========== */
+    /* بطاقات زجاجية */
     .card {
       background: rgba(15, 23, 42, 0.65);
       backdrop-filter: blur(12px);
@@ -90,7 +76,6 @@
       border-color: rgba(56, 189, 248, 0.4);
     }
 
-    /* تدرج للهيدر */
     .header h1 {
       font-size: 1.8rem;
       font-weight: 800;
@@ -99,7 +84,6 @@
       -webkit-background-clip: text;
       color: transparent;
       margin-bottom: 0.25rem;
-      text-shadow: 0 2px 10px rgba(56, 189, 248, 0.2);
     }
     .header p {
       font-size: 0.7rem;
@@ -135,7 +119,6 @@
       color: #e2e8f0;
       font-family: monospace;
       direction: ltr;
-      letter-spacing: 1px;
     }
     .today-btn {
       background: linear-gradient(135deg, #38bdf8, #818cf8);
@@ -147,7 +130,7 @@
       box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
       transition: all 0.2s;
     }
-    .today-btn:hover { transform: scale(1.02); box-shadow: 0 6px 16px rgba(56, 189, 248, 0.5); }
+    .today-btn:hover { transform: scale(1.02); }
 
     /* قائمة العادات */
     .habits-list {
@@ -189,8 +172,6 @@
     .habit-icon svg {
       width: 26px;
       height: 26px;
-      fill: #38bdf8;
-      stroke: none;
       filter: drop-shadow(0 2px 4px rgba(56, 189, 248, 0.4));
     }
     .habit-name {
@@ -230,7 +211,36 @@
     }
     .delete-habit:hover { opacity: 1; transform: scale(1.1); }
 
-    /* إحصائيات */
+    /* نقاط خاصة لعادة "لا عادة سيئة" */
+    .score-card {
+      background: linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(250, 204, 21, 0.2));
+      border-radius: 24px;
+      padding: 12px;
+      margin-bottom: 16px;
+      text-align: center;
+      border: 1px solid rgba(249, 115, 22, 0.5);
+    }
+    .score-number {
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #facc15, #f97316);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      direction: ltr;
+    }
+    .prize-badge {
+      background: linear-gradient(135deg, #f97316, #facc15);
+      color: #0f172a;
+      border-radius: 40px;
+      padding: 6px 12px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      margin: 5px;
+      display: inline-block;
+    }
+
+    /* باقي العناصر (إحصائيات، أهداف، إلخ) */
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
@@ -242,8 +252,6 @@
       border-radius: 24px;
       padding: 12px;
       text-align: center;
-      backdrop-filter: blur(4px);
-      border: 1px solid rgba(56, 189, 248, 0.2);
     }
     .stat-number {
       font-size: 1.8rem;
@@ -254,8 +262,6 @@
       color: transparent;
       direction: ltr;
     }
-
-    /* الأهداف */
     .goal-section {
       background: rgba(0, 0, 0, 0.3);
       border-radius: 24px;
@@ -274,10 +280,7 @@
       width: 0%;
       height: 100%;
       transition: width 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-      box-shadow: 0 0 6px #38bdf8;
     }
-
-    /* شارات */
     .badges {
       display: flex;
       flex-wrap: wrap;
@@ -291,10 +294,7 @@
       padding: 4px 12px;
       font-size: 0.7rem;
       font-weight: 800;
-      box-shadow: 0 2px 8px rgba(249, 115, 22, 0.4);
     }
-
-    /* تقويم حراري */
     .heatmap {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
@@ -312,15 +312,12 @@
       font-weight: bold;
       color: #94a3b8;
       border: 1px solid rgba(56, 189, 248, 0.2);
-      transition: 0.1s;
     }
     .heatmap-day.completed {
       background: linear-gradient(145deg, #10b981, #059669);
       color: white;
       box-shadow: 0 0 6px #10b981;
     }
-
-    /* زر إضافة عادة */
     .add-habit {
       display: flex;
       gap: 8px;
@@ -340,11 +337,7 @@
       padding: 8px 20px;
       color: white;
       cursor: pointer;
-      transition: 0.2s;
     }
-    .add-habit button:hover { transform: scale(1.02); box-shadow: 0 0 12px #38bdf8; }
-
-    /* أزرار التصدير */
     .export-import {
       display: flex;
       gap: 10px;
@@ -359,11 +352,7 @@
       font-size: 0.7rem;
       cursor: pointer;
       color: #e2e8f0;
-      transition: 0.2s;
     }
-    .small-btn:hover { background: #38bdf8; color: #0f172a; }
-
-    /* اقتباس */
     .quote {
       text-align: center;
       font-style: italic;
@@ -373,13 +362,11 @@
       padding-top: 10px;
       border-top: 1px solid rgba(56, 189, 248, 0.3);
     }
-
     footer {
       font-size: 0.65rem;
       text-align: center;
       color: #64748b;
     }
-
     @media (max-width: 500px) {
       .stat-number { font-size: 1.4rem; }
     }
@@ -387,14 +374,13 @@
 </head>
 <body>
 
-<!-- جزيئات خلفية -->
 <div class="particles" id="particles"></div>
 
 <div class="app-container">
   <div class="card">
     <div class="header">
       <h1>📆 يومياتي المتطورة</h1>
-      <p>تتبع عاداتك + أهداف أسبوعية + شارات تحفيزية</p>
+      <p>تتبع عاداتك + نقاط وجوائز لعادة "لا عادة سيئة"</p>
     </div>
   </div>
 
@@ -423,6 +409,17 @@
       </select>
       <button id="addHabitBtn">➕ أضف</button>
     </div>
+  </div>
+
+  <!-- بطاقة النقاط والجوائز الخاصة بعادة "لا عادة سيئة" -->
+  <div class="card" id="specialBadCard">
+    <div style="font-weight:800; margin-bottom:8px;">🏆 جوائز الالتزام بـ "لا عادة سيئة"</div>
+    <div class="score-card">
+      <div>🌟 نقاط الإنجاز التراكمية</div>
+      <div class="score-number" id="badHabitScore">0</div>
+      <div style="font-size:0.7rem;">كل يوم بدون عادة سيئة = +10 نقاط</div>
+    </div>
+    <div id="prizesContainer" class="badges" style="justify-content:center;"></div>
   </div>
 
   <div class="card">
@@ -464,26 +461,26 @@
     </div>
     <div class="quote" id="dailyQuote">✨ "العادة قوة خفية"</div>
   </div>
-  <footer>✨ إضغط مطولاً على العادة لحذفها | اهتزاز عند الإنجاز</footer>
+  <footer>✨ اضغط على العلامة لإكمال العادة | لا ضغط مطول للنسخ</footer>
 </div>
 
 <script>
-  // ========== أيقونات SVG ==========
+  // ========== أيقونات SVG واضحة ==========
   const ICONS = {
-    no_bad: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4" y1="4" x2="20" y2="20"/></svg>`,
-    pray: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`,
-    wash_face: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.5c-5 0-9 4-9 9s4 9 9 9 9-4 9-9-4-9-9-9zM12 7v6"/><path d="M9 10h6"/></svg>`,
-    read_book: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="12" y2="10"/></svg>`,
-    star: `<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15 8.5 22 9.5 17 14.5 18.5 21.5 12 17.5 5.5 21.5 7 14.5 2 9.5 9 8.5 12 2"/></svg>`,
-    heart: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`,
-    sport: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 12c0 4 2 8 6 8s6-4 6-8-2-8-6-8-6 4-6 8z"/><path d="M12 4v16M4 12h16"/></svg>`
+    no_bad: `<svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4" y1="4" x2="20" y2="20"/></svg>`,
+    pray: `<svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`,
+    wash_face: `<svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>`,
+    read_book: `<svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="12" y2="10"/></svg>`,
+    star: `<svg viewBox="0 0 24 24" fill="#facc15"><polygon points="12 2 15 8.5 22 9.5 17 14.5 18.5 21.5 12 17.5 5.5 21.5 7 14.5 2 9.5 9 8.5 12 2"/></svg>`,
+    heart: `<svg viewBox="0 0 24 24" fill="#f97316"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`,
+    sport: `<svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M6 12c0 4 2 8 6 8s6-4 6-8-2-8-6-8-6 4-6 8z"/><path d="M12 4v16M4 12h16"/></svg>`
   };
 
-  // ========== بيانات التطبيق ==========
+  // ========== البيانات ==========
   let HABITS = [];
   let appData = { habitsHistory: {} };
   let currentDate = new Date().toISOString().slice(0,10);
-  const STORAGE_KEY = "advanced_habits_v5";
+  const STORAGE_KEY = "advanced_habits_v6";
 
   function initDefaultHabits() {
     return [
@@ -599,7 +596,49 @@
     });
   }
 
-  // دوال الإحصائيات
+  // حساب نقاط "لا عادة سيئة"
+  function calculateBadHabitScore() {
+    let score = 0;
+    for (let date in appData.habitsHistory) {
+      if (appData.habitsHistory[date]["no_bad"] === true) {
+        score += 10;
+      }
+    }
+    return score;
+  }
+
+  // الحصول على سلسلة "لا عادة سيئة"
+  function getBadHabitStreak() {
+    let streak = 0;
+    let today = new Date();
+    for (let i = 0; i < 1000; i++) {
+      let d = new Date(today);
+      d.setDate(today.getDate() - i);
+      let dateStr = d.toISOString().slice(0,10);
+      const day = appData.habitsHistory[dateStr];
+      if (day && day["no_bad"] === true) streak++;
+      else break;
+    }
+    return streak;
+  }
+
+  // جوائز خاصة لـ "لا عادة سيئة"
+  function updateBadHabitPrizes() {
+    const score = calculateBadHabitScore();
+    const streak = getBadHabitStreak();
+    const prizesDiv = document.getElementById("prizesContainer");
+    let prizes = [];
+    if (score >= 100) prizes.push("🏅 100 نقطة - وسام المثابرة");
+    if (score >= 300) prizes.push("🏆 300 نقطة - نجم الانضباط");
+    if (score >= 500) prizes.push("🎖️ 500 نقطة - أسطورة التحكم الذاتي");
+    if (streak >= 7) prizes.push("🔥 سلسلة 7 أيام بدون عادة سيئة");
+    if (streak >= 30) prizes.push("💎 سلسلة 30 يوماً خالية من العادات السيئة");
+    if (prizes.length === 0) prizes.push("ابدأ رحلتك لتحصل على جوائز!");
+    prizesDiv.innerHTML = prizes.map(p => `<div class="prize-badge">${p}</div>`).join("");
+    document.getElementById("badHabitScore").innerText = score;
+  }
+
+  // باقي الإحصائيات (مثل السابق)
   function getPerfectStreak() {
     let streak = 0;
     let today = new Date();
@@ -760,6 +799,7 @@
     renderHeatmap();
     updateWeeklyGoal();
     updateBadges();
+    updateBadHabitPrizes();
   }
 
   function updateDateDisplay() {
@@ -827,11 +867,9 @@
     }
   }
 
-  // ========== إنشاء الجزيئات ==========
   function createParticles() {
     const container = document.getElementById("particles");
-    const particleCount = 40;
-    for (let i = 0; i < particleCount; i++) {
+    for (let i = 0; i < 40; i++) {
       const particle = document.createElement("div");
       particle.classList.add("particle");
       const size = Math.random() * 6 + 2;
@@ -845,7 +883,6 @@
     }
   }
 
-  // ========== بدء التطبيق ==========
   document.addEventListener("DOMContentLoaded", () => {
     loadData();
     createParticles();
