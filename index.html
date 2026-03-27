@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="يومياتي">
+  <meta name="theme-color" content="#1e293b">
+  <title>يومياتي | تتبع العادات</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: system-ui, 'Segoe UI', 'Tajawal', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f1f5f9;
+      color: #0f172a;
+      padding: 1rem 1rem 2rem;
+      max-width: 600px;
+      margin: 0 auto;
+      min-height: 100vh;
+    }
+
+    /* حاوية التطبيق */
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    /* بطاقة عامة */
+    .card {
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(2px);
+      border-radius: 32px;
+      padding: 1.25rem 1rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.02);
+      border: 1px solid rgba(203, 213, 225, 0.4);
+      transition: all 0.2s ease;
+    }
+
+    /* رأس التطبيق */
+    .header {
+      text-align: center;
+      padding: 0.5rem 0 0.25rem;
+    }
+    .header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #1e293b, #2d3a4f);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      letter-spacing: -0.3px;
+    }
+    .header p {
+      font-size: 0.75rem;
+      color: #475569;
+      margin-top: 4px;
+    }
+
+    /* شريط التاريخ */
+    .date-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #eef2ff;
+      border-radius: 60px;
+      padding: 0.4rem 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .date-nav-btn {
+      background: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 40px;
+      font-size: 1.5rem;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: all 0.2s;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .date-nav-btn:active { transform: scale(0.94); background: #e2e8f0; }
+    .current-date {
+      font-weight: 700;
+      font-size: 1rem;
+      background: #ffffffcc;
+      padding: 0.3rem 1rem;
+      border-radius: 40px;
+      color: #0f172a;
+      direction: ltr;
+      font-family: monospace;
+    }
+    .today-btn {
+      background: #cbd5e1;
+      padding: 0.3rem 0.9rem;
+      border-radius: 40px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* قائمة العادات */
+    .habits-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+      margin-top: 0.5rem;
+    }
+    .habit-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #ffffff;
+      padding: 0.9rem 1rem;
+      border-radius: 24px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+      border: 1px solid #e2e8f0;
+      transition: all 0.2s;
+    }
+    .habit-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+    }
+    .habit-emoji {
+      font-size: 1.7rem;
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
+    }
+    .habit-name {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #1e293b;
+    }
+    .habit-check {
+      width: 32px;
+      height: 32px;
+      border-radius: 32px;
+      background: #f1f5f9;
+      border: 2px solid #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.15s ease;
+      color: #475569;
+      font-size: 1.2rem;
+    }
+    .habit-check.completed {
+      background: #10b981;
+      border-color: #10b981;
+      color: white;
+      box-shadow: 0 4px 10px rgba(16,185,129,0.3);
+    }
+
+    /* إحصائيات سريعة */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .stat-block {
+      background: #f8fafc;
+      border-radius: 24px;
+      padding: 12px 8px;
+      text-align: center;
+    }
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #2c3e66;
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.7rem;
+      color: #475569;
+      margin-top: 5px;
+      font-weight: 500;
+    }
+
+    /* جدول الرياضيات (تفصيل العادات) */
+    .math-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+    .math-table th, .math-table td {
+      padding: 10px 6px;
+      text-align: center;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .math-table th {
+      font-weight: 700;
+      color: #2c3e66;
+      background: #f1f5f9;
+      border-radius: 16px 0 0 0;
+    }
+    .habit-streak {
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .streak-badge {
+      background: #e6f7ec;
+      color: #15803d;
+      border-radius: 40px;
+      padding: 2px 8px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .btn-reset-data {
+      background: none;
+      border: 1px solid #e2e8f0;
+      padding: 8px 12px;
+      border-radius: 50px;
+      font-size: 0.7rem;
+      color: #64748b;
+      margin-top: 6px;
+      cursor: pointer;
+    }
+    footer {
+      font-size: 0.65rem;
+      text-align: center;
+      color: #94a3b8;
+      margin-top: 10px;
+    }
+    button {
+      background: none;
+      border: none;
+    }
+    @media (max-width: 450px) {
+      body { padding: 0.8rem; }
+      .stat-number { font-size: 1.6rem; }
+      .habit-name { font-size: 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  <div class="header">
+    <h1>📆 يومياتي</h1>
+    <p>تتبع عاداتك اليومية | ذكاء إحصائي</p>
+  </div>
+
+  <!-- بطاقة التاريخ والتنقل -->
+  <div class="card" style="padding: 0.8rem 1rem;">
+    <div class="date-bar">
+      <button class="date-nav-btn" id="prevDayBtn">←</button>
+      <span class="current-date" id="currentDateLabel">--</span>
+      <button class="date-nav-btn" id="nextDayBtn">→</button>
+      <button class="today-btn" id="todayBtn">اليوم</button>
+    </div>
+    <div style="font-size: 0.7rem; color:#4b5563; text-align: center; margin-top: 4px;">
+      ✨ يمكنك تعديل أي يوم سابق — البيانات محفوظة تلقائياً ✨
+    </div>
+  </div>
+
+  <!-- قائمة العادات اليومية -->
+  <div class="card">
+    <div style="font-weight: 700; margin-bottom: 10px; display: flex; justify-content: space-between;">
+      <span>✅ مهام اليوم</span>
+      <span style="font-size: 0.7rem; background:#eef2ff; padding: 2px 12px; border-radius: 40px;" id="completionBadge">0%</span>
+    </div>
+    <div id="habitsContainer" class="habits-list">
+      <!-- سيتم إنشاء العادات ديناميكياً عبر js -->
+    </div>
+  </div>
+
+  <!-- بطاقة الإحصائيات الذكية (الرياضيات) -->
+  <div class="card">
+    <div style="font-weight: 800; margin-bottom: 12px;">📊 جدول التحليل الذكي</div>
+    <div class="stats-grid">
+      <div class="stat-block">
+        <div class="stat-number" id="todayCompleteCount">0</div>
+        <div class="stat-label">✅ أنجزت اليوم</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-number" id="streakDays">0</div>
+        <div class="stat-label">🔥 أيام متتالية كاملة</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-number" id="totalPerfectDays">0</div>
+        <div class="stat-label">🏆 أيام مثالية (كل العادات)</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-number" id="totalHabitsDone">0</div>
+        <div class="stat-label">📌 إجمالي إنجاز العادات</div>
+      </div>
+    </div>
+
+    <!-- جدول تفصيلي لكل عادة (رياضيات التتبع) -->
+    <div style="margin-top: 18px; overflow-x: auto;">
+      <table class="math-table" id="habitsStatsTable">
+        <thead>
+          <tr><th>العادة</th><th>✅ إجمالي الأيام</th><th>🔥 السلسلة الحالية</th><th>🏅 أفضل سلسلة</th></tr>
+        </thead>
+        <tbody id="statsTableBody">
+          <!-- يتم تعبئته بـ JS -->
+        </tbody>
+      </table>
+    </div>
+    <div style="display: flex; justify-content: flex-end; margin-top: 12px;">
+      <button id="resetAllDataBtn" class="btn-reset-data">🗑️ إعادة ضبط كل البيانات</button>
+    </div>
+  </div>
+  <footer>تطبيق ذكي | يحسب لك كل يوم ويتتبع إنجازاتك 🧠</footer>
+</div>
+
+<script>
+  // ---------- تعريف العادات (يمكن تعديلها بسهولة) ----------
+  const HABITS = [
+    { id: "no_bad_habit", name: "🚫 لا عادة سيئة", emoji: "🚫" },
+    { id: "prayed", name: "🕌 صليت", emoji: "🕌" },
+    { id: "washed_face", name: "💧 غسلت وجهي", emoji: "💧" },
+    { id: "did_something", name: "🌟 عملت شيئاً مفيداً", emoji: "🌟" }
+  ];
+
+  // مفتاح التخزين
+  const STORAGE_KEY = "daily_habits_tracker_v2";
+
+  // ---------- دوال مساعدة للتاريخ (تنسيق YYYY-MM-DD محلي) ----------
+  function getLocalDateString(date) {
+    let year = date.getFullYear();
+    let month = String(date.getMonth() + 1).padStart(2, '0');
+    let day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  function getTodayDate() {
+    let now = new Date();
+    return getLocalDateString(now);
+  }
+
+  // ---------- بنية البيانات ----------
+  let appData = {
+    habitsHistory: {}   // { "2025-03-27": { "no_bad_habit": true/false, ... } }
+  };
+
+  // الحالة الحالية للعرض (التاريخ المختار)
+  let currentDate = getTodayDate();
+  
+  // تحميل البيانات من localStorage
+  function loadData() {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        appData.habitsHistory = parsed.habitsHistory || {};
+      } catch(e) { console.warn(e); }
+    }
+    // التأكد من وجود هيكل لكل عادة (للتكامل)
+    ensureHistoryIntegrity();
+  }
+
+  // التأكد من أن أي تاريخ له كائن يحتوي على كل العادات (true/false افتراضي false)
+  function ensureHistoryIntegrity() {
+    let changed = false;
+    // لجميع التواريخ الموجودة
+    Object.keys(appData.habitsHistory).forEach(date => {
+      const dayData = appData.habitsHistory[date];
+      HABITS.forEach(habit => {
+        if (typeof dayData[habit.id] !== 'boolean') {
+          dayData[habit.id] = false;
+          changed = true;
+        }
+      });
+    });
+    if (changed) saveData();
+  }
+
+  // الحصول على حالة عادات تاريخ محدد (إذا لم يوجد نعيد كل false)
+  function getHabitsForDate(date) {
+    if (!appData.habitsHistory[date]) {
+      const empty = {};
+      HABITS.forEach(h => { empty[h.id] = false; });
+      appData.habitsHistory[date] = empty;
+      // لا نحفظ تلقائياً هنا، سيتم الحفظ عند أول تعديل
+    }
+    return appData.habitsHistory[date];
+  }
+
+  // تحديث حالة عادة معينة لتاريخ معين
+  function setHabitStatus(date, habitId, completed) {
+    if (!appData.habitsHistory[date]) {
+      const empty = {};
+      HABITS.forEach(h => { empty[h.id] = false; });
+      appData.habitsHistory[date] = empty;
+    }
+    appData.habitsHistory[date][habitId] = completed;
+    saveData();
+    // تحديث العرض إذا كان التاريخ المختار هو نفسه
+    if (date === currentDate) {
+      renderHabitsForCurrentDate();
+      updateQuickStats();
+      renderStatsTable();    // تحديث جدول الرياضيات والإحصائيات الكلية
+    } else {
+      // إذا عدلنا على تاريخ غير معروض، نحدث الجداول الإجمالية فقط
+      updateQuickStats();
+      renderStatsTable();
+    }
+  }
+
+  function saveData() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      habitsHistory: appData.habitsHistory
+    }));
+  }
+
+  // ---------- إحصائيات متقدمة (ذكية) ----------
+  // حساب عدد الأيام المثالية (كل العادات = true) حتى تاريخ معين
+  function getAllPerfectDaysCount() {
+    let count = 0;
+    for (let date in appData.habitsHistory) {
+      const day = appData.habitsHistory[date];
+      let allTrue = true;
+      for (let h of HABITS) {
+        if (!day[h.id]) { allTrue = false; break; }
+      }
+      if (allTrue) count++;
+    }
+    return count;
+  }
+
+  // مجموع كل الإنجازات (مجموع مرات أداء العادات)
+  function getTotalCompletionsSum() {
+    let total = 0;
+    for (let date in appData.habitsHistory) {
+      const day = appData.habitsHistory[date];
+      for (let h of HABITS) {
+        if (day[h.id]) total++;
+      }
+    }
+    return total;
+  }
+
+  // لكل عادة: إجمالي مرات الإنجاز، السلسلة الحالية، أفضل سلسلة
+  function getHabitStatistics() {
+    // الحصول على جميع التواريخ مرتبة تصاعدياً
+    let allDates = Object.keys(appData.habitsHistory).sort();
+    if (allDates.length === 0) {
+      // إذا لم توجد بيانات نرجع كل شيء 0
+      let stats = {};
+      HABITS.forEach(h => {
+        stats[h.id] = { total: 0, currentStreak: 0, bestStreak: 0 };
+      });
+      return stats;
+    }
+
+    let stats = {};
+    HABITS.forEach(h => {
+      let total = 0;
+      let currentStreak = 0;
+      let bestStreak = 0;
+      let streakRunning = 0;
+      // نسير عبر الأيام بالترتيب التصاعدي
+      for (let i = 0; i < allDates.length; i++) {
+        const date = allDates[i];
+        const dayData = appData.habitsHistory[date];
+        const isCompleted = dayData[h.id] === true;
+        if (isCompleted) {
+          total++;
+          streakRunning++;
+          if (streakRunning > bestStreak) bestStreak = streakRunning;
+        } else {
+          streakRunning = 0;
+        }
+      }
+      // السلسلة الحالية: نحتاج أن نبدأ من اليوم الحالي ونتجه للخلف حتى نجد أول يوم لم يتم فيه
+      // (نعتمد على ترتيب التواريخ تنازلياً)
+      const sortedDesc = [...allDates].sort((a,b)=> (a<b?1:-1));
+      let curStreak = 0;
+      for (let i = 0; i < sortedDesc.length; i++) {
+        const date = sortedDesc[i];
+        const val = appData.habitsHistory[date][h.id];
+        if (val === true) curStreak++;
+        else break;
+      }
+      currentStreak = curStreak;
+      
+      stats[h.id] = { total, currentStreak, bestStreak };
+    });
+    return stats;
+  }
+
+  // حساب أيام المتتالية الكاملة (كل العادات صحيحة) من اليوم للخلف
+  function getCurrentPerfectStreak() {
+    let todayStr = getTodayDate();
+    let dates = Object.keys(appData.habitsHistory).sort();
+    if (dates.length === 0) return 0;
+    // نتجه من اليوم الحالي للخلف
+    let streak = 0;
+    let checkDate = new Date();
+    // نتحقق لمدة 1000 يوم كحد أقصى
+    for (let i = 0; i < 2000; i++) {
+      let dateStr = getLocalDateString(checkDate);
+      if (!appData.habitsHistory[dateStr]) {
+        // إذا لم يكن هناك سجل لهذا اليوم -> لا يعتبر مكتملاً
+        break;
+      }
+      const dayData = appData.habitsHistory[dateStr];
+      let allCompleted = true;
+      for (let h of HABITS) {
+        if (!dayData[h.id]) { allCompleted = false; break; }
+      }
+      if (allCompleted) {
+        streak++;
+        checkDate.setDate(checkDate.getDate() - 1);
+      } else {
+        break;
+      }
+    }
+    return streak;
+  }
+
+  // حساب إنجازات اليوم الحالي (للتاريخ المحدد)
+  function getCurrentDateCompletion(date) {
+    const dayData = appData.habitsHistory[date];
+    if (!dayData) return { completedCount: 0, total: HABITS.length, percent: 0 };
+    let completed = 0;
+    HABITS.forEach(h => { if (dayData[h.id]) completed++; });
+    let percent = Math.round((completed / HABITS.length) * 100);
+    return { completedCount: completed, total: HABITS.length, percent };
+  }
+
+  // تحديث البطاقات العلوية والإحصائيات السريعة
+  function updateQuickStats() {
+    const { completedCount, total, percent } = getCurrentDateCompletion(currentDate);
+    document.getElementById("todayCompleteCount").innerText = `${completedCount}/${total}`;
+    document.getElementById("completionBadge").innerText = `${percent}%`;
+    
+    const perfectStreak = getCurrentPerfectStreak();
+    document.getElementById("streakDays").innerText = perfectStreak;
+    
+    const totalPerfect = getAllPerfectDaysCount();
+    document.getElementById("totalPerfectDays").innerText = totalPerfect;
+    
+    const totalHabitsDone = getTotalCompletionsSum();
+    document.getElementById("totalHabitsDone").innerText = totalHabitsDone;
+  }
+
+  // عرض جدول الرياضيات (تفاصيل كل عادة)
+  function renderStatsTable() {
+    const habitStats = getHabitStatistics();
+    const tbody = document.getElementById("statsTableBody");
+    tbody.innerHTML = "";
+    HABITS.forEach(habit => {
+      const stats = habitStats[habit.id];
+      const totalDays = stats.total;
+      const currentStreak = stats.currentStreak;
+      const bestStreak = stats.bestStreak;
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td style="text-align:right; font-weight:600;">${habit.emoji} ${habit.name}</td>
+        <td>${totalDays}</td>
+        <td class="habit-streak">${currentStreak} <span class="streak-badge">يوم</span></td>
+        <td>${bestStreak}</td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+
+  // عرض قائمة العادات بناءً على currentDate
+  function renderHabitsForCurrentDate() {
+    const container = document.getElementById("habitsContainer");
+    const habitsData = getHabitsForDate(currentDate);
+    container.innerHTML = "";
+    HABITS.forEach(habit => {
+      const completed = habitsData[habit.id] === true;
+      const itemDiv = document.createElement("div");
+      itemDiv.className = "habit-item";
+      itemDiv.innerHTML = `
+        <div class="habit-info">
+          <div class="habit-emoji">${habit.emoji}</div>
+          <div class="habit-name">${habit.name}</div>
+        </div>
+        <div class="habit-check ${completed ? 'completed' : ''}" data-habit-id="${habit.id}">
+          ${completed ? '✓' : '○'}
+        </div>
+      `;
+      const checkDiv = itemDiv.querySelector(".habit-check");
+      checkDiv.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const newStatus = !completed;
+        setHabitStatus(currentDate, habit.id, newStatus);
+        // تحديث visual فوري
+        renderHabitsForCurrentDate();
+        updateQuickStats();
+        renderStatsTable();
+      });
+      container.appendChild(itemDiv);
+    });
+  }
+
+  // تحديث واجهة التاريخ
+  function updateDateDisplay() {
+    const dateObj = new Date(currentDate + "T12:00:00");
+    const formatted = dateObj.toLocaleDateString('ar-EG', { year:'numeric', month:'long', day:'numeric' });
+    document.getElementById("currentDateLabel").innerText = `${formatted}`;
+    // إعادة تحميل العادات لهذا التاريخ
+    renderHabitsForCurrentDate();
+    updateQuickStats();
+    renderStatsTable();
+  }
+
+  // تغيير التاريخ
+  function goPrevDay() {
+    let newDate = new Date(currentDate + "T12:00:00");
+    newDate.setDate(newDate.getDate() - 1);
+    currentDate = getLocalDateString(newDate);
+    updateDateDisplay();
+  }
+  function goNextDay() {
+    let newDate = new Date(currentDate + "T12:00:00");
+    newDate.setDate(newDate.getDate() + 1);
+    currentDate = getLocalDateString(newDate);
+    updateDateDisplay();
+  }
+  function goToday() {
+    currentDate = getTodayDate();
+    updateDateDisplay();
+  }
+
+  // إعادة ضبط كل البيانات بالكامل (تأكيد)
+  function resetAllData() {
+    if (confirm("⚠️ هل أنت متأكد؟ سيتم حذف كل بيانات العادات والتقدم نهائياً. لا يمكن التراجع.")) {
+      appData.habitsHistory = {};
+      saveData();
+      // إعادة تعيين إلى اليوم الحالي
+      currentDate = getTodayDate();
+      updateDateDisplay();
+      updateQuickStats();
+      renderStatsTable();
+    }
+  }
+
+  // تهيئة كاملة
+  function init() {
+    loadData();
+    // التأكد من أن اليوم الحالي له كائن في البيانات (اختياري: لتسهيل العرض)
+    if (!appData.habitsHistory[currentDate]) {
+      const empty = {};
+      HABITS.forEach(h => { empty[h.id] = false; });
+      appData.habitsHistory[currentDate] = empty;
+      saveData();
+    }
+    updateDateDisplay();
+    // ربط الأزرار
+    document.getElementById("prevDayBtn").addEventListener("click", goPrevDay);
+    document.getElementById("nextDayBtn").addEventListener("click", goNextDay);
+    document.getElementById("todayBtn").addEventListener("click", goToday);
+    document.getElementById("resetAllDataBtn").addEventListener("click", resetAllData);
+  }
+
+  init();
+</script>
+</body>
+</html>
